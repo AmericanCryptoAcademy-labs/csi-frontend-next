@@ -1,7 +1,118 @@
-import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
-import React from 'react'
+"use client";
+import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
+import React , {useState , useEffect  , useRef} from 'react';
+import { NFTStorage, File } from "nft.storage"
+import { CONTRACT_ABI , CONTRACT_ADDRESS } from '../../utils/constant'
+import { ethers } from 'ethers';
 
 function page() {
+
+    // Defining all states 
+    const [name, setname] = useState<string>("");
+    const [lastname,setlastname] = useState<string>("")
+    const [remarks, setremarks] = useState<string>("");
+    const [certificateName , setcertificateName] = useState<string>("")
+    const [useraddress , setaddress] = useState<string>("");
+    const [validity , setvalidity] = useState<string>("")
+    const [url, seturl] = useState<string>('')
+    const [isuploaded, setuploaded] = useState<string>();
+    const [loading, setloading] = useState<boolean>(false)
+    const [showUploadAlert, setShowUploadAlert] = useState<boolean>(false);
+    const [showMintAlert, setShowMintAlert] = useState<boolean>(false);
+    const [showMetamaskAlert, setShowMetamaskAlert] = useState<boolean>(false);
+    const [status,setstatus] = useState<string>('');
+    const [institute , setinstitute] = useState<string>("");
+
+    // defining  useRef for all inputes
+    const fileRef = useRef(null);
+    const instituteRef = useRef(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+    const mintnfthandler = async (ipnft: string, Useraddress: string, validitydate:string) => {
+        try {
+          setloading(true)
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          const signer = provider.getSigner();
+            
+          let contract = new ethers.Contract(CONTRACT_ADDRESS , CONTRACT_ABI, signer)
+          let transaction = await contract.mintCertificate(Useraddress, ipnft, Number(validitydate));
+          await transaction.wait()
+        //   setuploaded(true);
+          setloading(false)
+          setShowMintAlert(true); // Set showMintAlert to true after mintnfthandler function is completed
+          setTimeout(() => {
+            setShowMintAlert(false); // Set showMintAlert back to false after 5 seconds
+          }, 5000);
+        } catch (error) {
+           console.log("mint nft handler error ",error)
+        }
+    }
+
+    const uploadImage = async (imageData : Blob) : Promise<string> => {
+        setloading(true)
+        const nftstorage = new NFTStorage({ token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDAzM2Y5Mzc1ZEQ5ODY1YzhmN2FiODVENGRiRTM3NDhERWI4NTljRkYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4NTc3MTE1MDk5NiwibmFtZSI6IlBBUkszIn0.eHLoAl-RBIxAqXmHm_KTQ553Ha-_18sZrnoxuXpGxMI` })
+    
+        // Check if instituteRef.current is not null
+        const instituteValue:string = instituteRef.current ? instituteRef.current.value : 'American Crypto Academy';
+    
+        // Send request to store image
+        const { ipnft } = await nftstorage.store({
+          image: new File([imageData], "image.jpeg", { type: "image/jpeg" }),
+          name: name,
+          lastname:lastname,
+          certName:certificateName,
+          remarks : remarks,
+          validity:validity,
+          issuedTo : useraddress,
+          issuerName : instituteValue,
+          description: `${name} ${lastname} ${certificateName} ${remarks} ${validity} ${useraddress} ${instituteValue}`
+        })
+    
+        // Save the URL
+        // const NFturl = `https://ipfs.io/ipfs/${ipnft}/metadata.json`
+        seturl(ipnft)
+        // setuploaded(true);
+        setloading(false);
+        setShowUploadAlert(true); // Set showUploadAlert to true after uploadImage function is completed
+        setTimeout(() => {
+          setShowUploadAlert(false); // Set showUploadAlert back to false after 5 seconds
+        }, 5000);
+        return ipnft
+    
+      }
+
+    
+
+    // handle upload Function
+    const onSubmitHandler = async (event:React.FormEvent) => {
+    try {
+      event.preventDefault();
+      const files = fileRef.current.files[0];
+      console.log( "File", files);
+      console.log(name, remarks, validity,useraddress ,fileRef);
+      console.log("Validity of the Cert" , validity);
+
+      if(name == "" || remarks == "" || validity == "" || useraddress == "" || files == undefined){
+        alert("Please Fill All The Details")  ;
+        setIsModalOpen(true) ;   
+      }else{
+      const ipnft = await uploadImage(files);
+      console.log(ipnft);
+      await mintnfthandler(ipnft , useraddress , validity); 
+
+      }
+  
+    } catch (error) {
+      console.error(error.code); // Print the error on the consol
+        // // Display a generic error message for other types of errors
+        console.log(" handleUpload  error -> " + error)
+      
+    }
+    };
+ 
+
+
   return (
     <>
     <Breadcrumb pageName="Issue Certificate" />
@@ -15,7 +126,7 @@ function page() {
                         Certificate Information
                     </h3>
                 </div>
-                <form action="#">
+                <form>
                     <div className="p-6.5">
                         <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                             <div className="w-full xl:w-1/2">
@@ -23,6 +134,8 @@ function page() {
                                     First name
                                 </label>
                                 <input
+                                    required
+                                    onChange={(event) => setname(event.target.value)}
                                     type="text"
                                     placeholder="Enter your first name"
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -34,6 +147,8 @@ function page() {
                                     Last name
                                 </label>
                                 <input
+                                 required
+                                 onChange={(event) => setlastname(event.target.value)}
                                     type="text"
                                     placeholder="Enter your last name"
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -46,6 +161,8 @@ function page() {
                                 Certificate Name <span className="text-meta-1">*</span>
                             </label>
                             <input
+                                required
+                                onChange={(event) => setcertificateName(event.target.value)}
                                 type="email"
                                 placeholder="Enter Name Of Certificate"
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -57,6 +174,9 @@ function page() {
                                 Remarks
                             </label>
                             <input
+                                required
+                                onChange={(event) => setremarks(event.target.value)}
+
                                 type="text"
                                 placeholder="A Little Description"
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -68,7 +188,9 @@ function page() {
                             </label>
                             <div className="relative">
                                 <input
-                                    type="date"
+                                    required
+                                    onChange={(event) => setvalidity(event.target.value)}
+                                    type="number"
                                     className="custom-input-date custom-input-date-1 w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                 />
                             </div>
@@ -80,10 +202,13 @@ function page() {
         </div>
 
         <div className="flex flex-col gap-9">
+
+
+
             {/* <!-- Sign In Form --> */}
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
 
-                <form action="#">
+                <form>
                     <div className="p-4.5">
                         <div className="mb-4.5 rounded-sm  border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                             <div className="border-b border-stroke py-2.5 px-6.5 dark:border-strokedark">
@@ -97,7 +222,11 @@ function page() {
                                         Attach file
                                     </label>
                                     <input
-                                        type="file"
+                                        required
+                                        type={'file'}
+                                        accept="image/*"
+                                        multiple
+                                        ref={fileRef}
                                         className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                                     />
                                 </div>
@@ -140,9 +269,9 @@ function page() {
                                     </svg>
                                 </span>
                                 <select className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input">
-                                    <option value="">American Crypto Academy</option>
-                                    <option value="">Boston Univeristy</option>
-                                    <option value="">Harvard University</option>
+                                    <option ref={instituteRef}  value="American Crypto Academy">American Crypto Academy</option>
+                                    <option  ref={instituteRef} value="Boston Univeristy">Boston Univeristy</option>
+                                    <option ref={instituteRef}  value="Harvard University">Harvard University</option>
                                 </select>
                                 <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
                                     <svg
@@ -170,12 +299,14 @@ function page() {
                                 Address Of Candidate <span className="text-meta-1">*</span>
                             </label>
                             <input
+                                required
+                                onChange={(event)  => setaddress(event.target.value)}
                                 type="text"
                                 placeholder="Enter your email address"
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                             />
                         </div>
-                        <button className="mb-3.5 mt-7.5 flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
+                        <button onClick={(e) => onSubmitHandler(e)} className="mb-3.5 mt-7.5 flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
                             Sign In
                         </button>
                     </div>
