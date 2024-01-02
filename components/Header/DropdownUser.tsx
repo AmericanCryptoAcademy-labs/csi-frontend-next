@@ -1,6 +1,12 @@
+"use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+
+import { ConnectWallet } from "@thirdweb-dev/react";
+
+import {ThirdwebProvider,} from "@thirdweb-dev/react";
+
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -35,6 +41,7 @@ const DropdownUser = () => {
   });
 
   return (
+    <ThirdwebProvider> 
     <div className="relative">
       <Link
         ref={trigger}
@@ -177,9 +184,14 @@ const DropdownUser = () => {
           </svg>
           Log Out
         </button>
+
+        <button className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+          <ConnectWallet/>
+        </button>
       </div>
       {/* <!-- Dropdown End --> */}
     </div>
+    </ThirdwebProvider>
   );
 };
 

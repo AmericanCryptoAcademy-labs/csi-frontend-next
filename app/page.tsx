@@ -1,16 +1,24 @@
+"use client";
 import ECommerce from "@/components/Dashboard/E-commerce";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "TailAdmin | E-commerce Dashboard Tempalte",
-  description: "This is Home for TailAdmin",
-  // other metadata
-};
+// importing Chakra
+import {ChakraProvider } from "@chakra-ui/react";
+
+// Importing Thirdweb Providers
+import {ThirdwebProvider,} from "@thirdweb-dev/react";
 
 export default function Home() {
   return (
     <>
-      <ECommerce />
+      <ChakraProvider>
+        <ThirdwebProvider>
+
+        <ECommerce />
+
+        </ThirdwebProvider>
+    
+      </ChakraProvider>     
     </>
   );
 }
