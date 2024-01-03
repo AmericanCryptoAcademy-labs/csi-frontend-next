@@ -979,3 +979,5 @@ export const CONTRACT_ABI = [
       "type": "function"
     }
 ]
+
+export const ADMIN = "0xD18b11899827ff8B09c989dcbBC32c95FeA6a3b4"

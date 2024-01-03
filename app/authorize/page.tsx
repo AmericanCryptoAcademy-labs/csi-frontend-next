@@ -1,13 +1,93 @@
 "use client"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Link from "next/link";
-import React, { useState } from 'react'
+import React, { useState , useEffect } from 'react';
+import { CONTRACT_ABI, CONTRACT_ADDRESS , ADMIN } from '../../utils/constant';
+import { ethers } from 'ethers';
 
 function page() {
-    const [addTeacher, setAddTeacher] = useState('')
-    const [removeTeacher, setRemoveTeacher] = useState('')
 
-    const teachers = ["dasfsfdadfasdfasdf", "asdfasdfasdfsdfa", "asdfasdfasdfasdfd", "dsffasdfasdfaddf", "fasdfadsfadffaf"]
+
+    const [walletAddress , setwalletAddress] = useState<string>("");
+    const [teachersArray , setteachers] = useState<Array<string>>([]);
+    const [teacherAddress , setTeacherAddress] =  useState<string>("");
+
+    async function fetchAllTeachers() {
+        try {
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+          const teachers = await contract.fetchAllTeachers();
+          console.log("teachers" , teachers);
+          setteachers(teachers)
+          return teachers;
+        } catch (error) {
+          console.error("Error fetching teachers:", error);
+          return [];
+        }
+    }
+
+
+    const addteacher = async() =>{
+
+        try {
+
+          if(teacherAddress === "" || teacherAddress === ADMIN){
+            alert("Please Input Teacher Address or Inputed Teacher Address is of Admin");
+          }
+
+          const provider = new ethers.providers.Web3Provider(window.ethereum)
+          const signer = provider.getSigner()
+          const aift = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+          const tx = await aift.addTeacher(teacherAddress);
+          console.log(tx)
+    
+          const txhash = tx.hash 
+    
+          signer.provider.on(txhash, (receipt) => {
+              console.log('Transaction confirmed:', receipt);
+              alert("Transaction confirmed")
+            });
+        } catch (error) {
+          console.log(error)
+        } 
+    
+    
+    }
+      
+      const removeteacher = async() =>{
+
+        try {
+
+          if(teacherAddress === "" || teacherAddress === ADMIN){
+            alert("Please Input Teacher Address or Inputed Teacher Address is of Admin");
+          }
+
+
+          const provider = new ethers.providers.Web3Provider(window.ethereum)
+          const signer = provider.getSigner()
+          const aift = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+          const tx = await aift.removeTeacher(teacherAddress);
+          console.log(tx)
+    
+          const txhash = tx.hash 
+    
+          signer.provider.on(txhash, (receipt) => {
+              console.log('Transaction confirmed:', receipt);
+              alert("Transaction Confirmed")
+             
+            });
+        } catch (error) {
+          console.log(error)
+        
+        } 
+    
+    }
+
+
+    useEffect(() => {
+        fetchAllTeachers()
+      },[])
+
 
     return (
 
@@ -26,12 +106,12 @@ function page() {
                             <p className="text-lg mb-3">Address Of Teacher To Add</p>
                             <div className="flex justify-between">
                                 <input
-                                    onChange={(event) => setAddTeacher(event.target.value)}
+                                    onChange={(event) => setTeacherAddress(event.target.value)}
                                     type="text"
                                     placeholder="Teacher Wallet Address"
                                     className="mr-3 custom-input-date custom-input-date-1 w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                 />
-                                <button className='bg-primary px-5 rounded-md text-white w-4/12'>
+                                <button onClick={(e) => addteacher()} className='bg-primary px-5 rounded-md text-white w-4/12'>
                                     Add Teacher
                                 </button>
 
@@ -43,12 +123,12 @@ function page() {
                             <p className="text-lg mb-3">Address Of Teacher To Remove</p>
                             <div className="flex justify-between">
                                 <input
-                                    onChange={(event) => setRemoveTeacher(event.target.value)}
+                                    onChange={(event) => setTeacherAddress(event.target.value)}
                                     type="text"
                                     placeholder="Teacher Wallet Address"
                                     className="mr-3 custom-input-date custom-input-date-1 w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                 />
-                                <button className='bg-primary px-5 rounded-md text-white w-4/12'>
+                                <button onClick={() => removeteacher()} className='bg-primary px-5 rounded-md text-white w-4/12'>
                                     Remove Teacher
                                 </button>
 
@@ -57,9 +137,6 @@ function page() {
                         </div>
                     </div>
                 </div>
-
-
-
 
 
                 <div className="w-5/12 pl-3 h-5/6">
@@ -74,10 +151,10 @@ function page() {
                         </div>
 
                         <div className="px-3 pb-5 h-125 overflow-y-scroll">
-                            {teachers.map((t)=>(
+                            {teachersArray.map((t)=>(
                                 <div className="group flex items-center justify-between rounded-md p-4.5 hover:bg-gray-2 dark:hover:bg-graydark">
                                 <div className="flex items-center gap-4">
-                                    <h4 className=" text-xl  text-black group-hover:text-primary dark:text-white dark:group-hover:text-primary">
+                                    <h4 className=" text-md  text-black group-hover:text-primary dark:text-white dark:group-hover:text-primary">
                                         {t}
                                     </h4>
                                 </div>
@@ -86,11 +163,6 @@ function page() {
                         </div>
                     </div>
                 </div>
-
-
-
-
-
 
             </div>
 
