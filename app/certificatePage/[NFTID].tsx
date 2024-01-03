@@ -1,11 +1,45 @@
+"use client"
 import { Breadcrumb } from '@chakra-ui/react'
 import Image from 'next/image'
-import React from 'react'
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react'
 
 function page() {
-  const nftCid = "bafyreidgfhdn3k47oefbtundl5y2nlncu76mw5szwb3wblxwzrxw44i6y";
-  const contractAddress = "0x32999F8862941f9707e66134B37f1E5ddbada555";
-  const tokenId = "1";
+
+  const router = useRouter()
+  const { nftId } = router.query;
+
+  const [certificate, setCertificate] = useState({
+    nftCid: "",
+    contractAddress: "",
+    tokenId: "",
+    // Add more certificate fields as needed
+  });
+
+  const fetchCertificateData = async (nftId) => {
+    // Fetch data from your backend or service
+    // For example:
+    // const response = await fetch(`/api/certificate/${nftId}`);
+    // const data = await response.json();
+    // return data;
+
+    // Temporary placeholder data
+    return {
+      nftCid: "bafyreidgfhdn3k47oefbtundl5y2nlncu76mw5szwb3wblxwzrxw44i6y",
+      contractAddress: "0x32999F8862941f9707e66134B37f1E5ddbada555",
+      tokenId: "1",
+      // ...other fields
+    };
+  };
+
+  useEffect(() => {
+    if (nftId) {
+      fetchCertificateData(nftId).then(data => {
+        setCertificate(data);
+      });
+    }
+  }, [nftId]);
+
   return (
     <>
 
@@ -99,7 +133,7 @@ function page() {
                       NFT CID
                     </label>
                     <p className="break-all w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white">
-                      {nftCid}
+                      {certificate.nftCid}
                     </p>
                   </div>
                   <div className="mb-4.5">
@@ -107,7 +141,7 @@ function page() {
                       Contract Address
                     </label>
                     <p className="break-all w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white">
-                      {contractAddress}
+                      {certificate.contractAddress}
                     </p>
                   </div>
                   <div className="mb-4.5">
@@ -115,7 +149,7 @@ function page() {
                       Token ID
                     </label>
                     <p className="break-all w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white">
-                      {tokenId}
+                      {certificate.tokenId}
                     </p>
                   </div>
                 </div>
