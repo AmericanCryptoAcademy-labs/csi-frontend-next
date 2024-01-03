@@ -1,11 +1,13 @@
 import React , {useState , useEffect} from 'react'
 import sample from '../images/sampleCert/sample.jpg'
 import Image from 'next/image';
+import Link from 'next/link';
 
 export type cardType = {
     tokenURI: string,
     thumbnail: any,
-    timeOfIssueance : string
+    timeOfIssueance : string,
+    tokenId: number
 }
 
 function Eventcard(props: cardType) {
@@ -61,13 +63,9 @@ function Eventcard(props: cardType) {
                 <p className='text-center text-meta-6 text-xl mb-2.5 '>{getHumanReadableDateFromContract(props.timeOfIssueance)}</p>
             </div>
 
-            {/* <p className='text-center  text-white'>Date: {date}</p> */}
-            {/* <p className='text-center text-neutral-300 mb-1.5'>Time: {time}</p> */}
-
-
-            {/* <Link to={"/tournaments/"+gid}> */}
-            <button className='bg-primary dark:bg-primary text-white w-full px-3 py-2 bg-amber-500 rounded-md font-semibold '>View More</button>
-            {/* </Link> */}
+            <Link href={`/showcase/${props.tokenId.toString()}`}>
+            <button className='bg-primary dark:bg-primary text-white w-full px-3 py-2 bg-amber-500 rounded-md font-semibold '>Details</button>
+            </Link>
         </div>
     )
 }

@@ -70,7 +70,7 @@ function page() {
               {nftArray.map((cert, index) => (
                 cert.tokenURI && (
                   <Link key={cert.NFTId} href={`/certificatePage/${cert.NFTId}`}>
-                    <Eventcard timeOfIssueance={cert.timeOfIssueance.toString()} tokenURI={cert.tokenURI} thumbnail={"/images/sample/sample.jpg"} ></Eventcard>
+                    <Eventcard tokenId={cert.id} timeOfIssueance={cert.timeOfIssueance.toString()} tokenURI={cert.tokenURI} thumbnail={"/images/sample/sample.jpg"} ></Eventcard>
                   </Link>
                 )
               ))}
