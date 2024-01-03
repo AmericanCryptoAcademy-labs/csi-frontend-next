@@ -67,20 +67,10 @@ function page() {
 
             <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-2 gap-5 mt-5    ">
 
-              {/* <Eventcard name="Solidity Devloper" thumbnail={"/images/sample/sample.jpg"} ></Eventcard>
-              <Eventcard name="Blockchain Fund.." thumbnail={"/images/sample/sample.jpg"}></Eventcard>
-              <Eventcard name="Data Mining" thumbnail={"/images/sample/sample.jpg"}></Eventcard>
-              <Eventcard name="EasyCerts" thumbnail={"/images/sample/sample.jpg"}></Eventcard>
-              <Eventcard name="Real Estate" thumbnail={"/images/sample/sample.jpg"} />
-              <Eventcard name="Real Estate" thumbnail={"/images/sample/sample.jpg"} />
-              <Eventcard name="Real Estate" thumbnail={"/images/sample/sample.jpg"} />
-              <Eventcard name="Real Estate" thumbnail={"/images/sample/sample.jpg"} />
-              <Eventcard name="Real Estate" thumbnail={"/images/sample/sample.jpg"} /> */}
-
               {nftArray.map((cert, index) => (
                 cert.tokenURI && (
                   <Link key={cert.NFTId} href={`/certificatePage/${cert.NFTId}`}>
-                    <Eventcard name={cert.tokenURI} thumbnail={"/images/sample/sample.jpg"} ></Eventcard>
+                    <Eventcard timeOfIssueance={cert.timeOfIssueance.toString()} tokenURI={cert.tokenURI} thumbnail={"/images/sample/sample.jpg"} ></Eventcard>
                   </Link>
                 )
               ))}

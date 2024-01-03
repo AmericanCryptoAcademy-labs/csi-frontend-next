@@ -1,15 +1,49 @@
-import React from 'react'
+import React , {useState , useEffect} from 'react'
 import sample from '../images/sampleCert/sample.jpg'
 import Image from 'next/image';
 
 export type cardType = {
-    name: string,
-    thumbnail: any
+    tokenURI: string,
+    thumbnail: any,
+    timeOfIssueance : string
 }
 
 function Eventcard(props: cardType) {
 
-    var name = props.name;
+    const [name, setname] = useState<string>();
+    // const [image, setimage] = useState<string>('');
+
+    useEffect(() => {
+        const fetchMetadata = async () => {
+          try {
+            console.log(`Token URI ${tokenURI}`)
+            const response = await fetch(`https://ipfs.io/ipfs/${tokenURI}/metadata.json`);
+            console.log(response)
+            const metadata = await response.json();
+            // console.log(metadata.text())
+            setname(metadata.name);
+            // let tokenImagex = metadata.image;
+            // setimage(tokenImagex);
+    
+    
+          } catch (error) {
+            console.error('Error fetching metadata:', error);
+          }
+        }
+        fetchMetadata();
+      }, [tokenURI]);
+
+
+      function getHumanReadableDateFromContract(timestamp) {
+        // 2. Convert the Unix timestamp to a JavaScript Date object
+        const dateObject = new Date(Number(timestamp) * 1000);
+    
+        // 3. Convert the Date object to a human-readable string
+        return dateObject.toISOString().slice(0,19).replace("T", " ");
+    }
+    
+
+    var tokenURI = props.tokenURI;
     // console.log(thumbnail);
     return (
         <div className='dark:bg-[#24313e] bg-graydark mx-1 rounded-lg p-6  mb-3'>
@@ -24,7 +58,7 @@ function Eventcard(props: cardType) {
             </div>
             <div className='mt-5 flex justify-between px-'>
                 <p className='text-center text-white text-xl font-semibold mb-2.5 '>{name}</p>
-                <p className='text-center text-meta-6 text-xl mb-2.5 '>12/03/2023</p>
+                <p className='text-center text-meta-6 text-xl mb-2.5 '>{getHumanReadableDateFromContract(props.timeOfIssueance)}</p>
             </div>
 
             {/* <p className='text-center  text-white'>Date: {date}</p> */}
