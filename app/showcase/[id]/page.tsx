@@ -9,7 +9,7 @@ import { ethers } from 'ethers';
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../../../utils/constant';
 import { Alert , AlertIcon , Box , Text , Input ,VStack ,  Button } from '@chakra-ui/react';
 
-function page({params}) {
+function Page({params}) {
 
     const [nftdata, setnftdata] = useState<string>('');
     const [tokenuri, settokenuri] = useState<string>('');
@@ -301,7 +301,7 @@ function page({params}) {
   )
 }
 
-export default page;
+export default Page;
 
 
 const MyModal = ({isOpen, onClose, extendValiditybtn, setdate  }) => {

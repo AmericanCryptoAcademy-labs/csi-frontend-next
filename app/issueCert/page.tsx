@@ -5,7 +5,7 @@ import { NFTStorage, File } from "nft.storage"
 import { CONTRACT_ABI , CONTRACT_ADDRESS } from '../../utils/constant'
 import { ethers } from 'ethers';
 
-function page() {
+function Page() {
 
     // Defining all states 
     const [name, setname] = useState<string>("");
@@ -321,4 +321,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

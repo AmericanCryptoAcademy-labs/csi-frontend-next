@@ -5,7 +5,7 @@ import React, { useState , useEffect } from 'react';
 import { CONTRACT_ABI, CONTRACT_ADDRESS , ADMIN } from '../../utils/constant';
 import { ethers } from 'ethers';
 
-function page() {
+function Page() {
 
 
     const [walletAddress , setwalletAddress] = useState<string>("");
@@ -151,8 +151,8 @@ function page() {
                         </div>
 
                         <div className="px-3 pb-5 h-125 overflow-y-scroll">
-                            {teachersArray.map((t)=>(
-                                <div className="group flex items-center justify-between rounded-md p-4.5 hover:bg-gray-2 dark:hover:bg-graydark">
+                            {teachersArray.map((t,i)=>(
+                                <div key={i} className="group flex items-center justify-between rounded-md p-4.5 hover:bg-gray-2 dark:hover:bg-graydark">
                                 <div className="flex items-center gap-4">
                                     <h4 className=" text-md  text-black group-hover:text-primary dark:text-white dark:group-hover:text-primary">
                                         {t}
@@ -170,4 +170,4 @@ function page() {
     )
 }
 
-export default page
+export default Page

@@ -9,7 +9,7 @@ import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../../utils/constant';
 import { Button, Box, Center, Heading, VStack, HStack, Spinner, ChakraProvider } from '@chakra-ui/react';
 
 
-function page() {
+function Page() {
 
   type CertInfo = {
     nfturl: string,
@@ -83,4 +83,4 @@ function page() {
   )
 }
 
-export default page
+export default Page
