@@ -43,11 +43,9 @@ const DropdownUser = () => {
   return (
     <ThirdwebProvider> 
     <div className="relative">
-      <Link
-        // ref={trigger}
+      <div
         onClick={() => setDropdownOpen(!dropdownOpen)}
         className="flex items-center gap-4"
-        href="#"
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
@@ -80,7 +78,7 @@ const DropdownUser = () => {
             fill=""
           />
         </svg>
-      </Link>
+      </div>
 
       {/* <!-- Dropdown Start --> */}
       <div
