@@ -44,7 +44,7 @@ const DropdownUser = () => {
     <ThirdwebProvider> 
     <div className="relative">
       <Link
-        ref={trigger}
+        // ref={trigger}
         onClick={() => setDropdownOpen(!dropdownOpen)}
         className="flex items-center gap-4"
         href="#"
