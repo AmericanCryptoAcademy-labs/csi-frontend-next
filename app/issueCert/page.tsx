@@ -4,6 +4,7 @@ import React , {useState , useEffect  , useRef} from 'react';
 import { NFTStorage, File } from "nft.storage"
 import { CONTRACT_ABI , CONTRACT_ADDRESS } from '../../utils/constant'
 import { ethers } from 'ethers';
+import { EAS, Offchain, SchemaEncoder, SchemaRegistry } from "@ethereum-attestation-service/eas-sdk";
 
 function page() {
 
@@ -22,11 +23,49 @@ function page() {
     const [showMetamaskAlert, setShowMetamaskAlert] = useState<boolean>(false);
     const [status,setstatus] = useState<string>('');
     const [institute , setinstitute] = useState<string>("");
+    const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+
 
     // defining  useRef for all inputes
     const fileRef = useRef(null);
     const instituteRef = useRef(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+    const attest = async() => {
+        const eas = new EAS("0xC2679fBD37d54388Ce493F1DB75320D236e1815e");
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+
+        eas.connect(signer);
+
+        const UID = "0x568c52be9b193efa14bc0f7f852e677ab38cf1d6170ee650267f3fea2f962823";
+
+        // Initialize SchemaEncoder with the schema string
+        const schemaEncoder = new SchemaEncoder("string CertName  ,  string remarks  , address  issuedTo ,uint24 validity , string personName");
+        const encodedData = schemaEncoder.encodeData([
+        { name: "CertName", value: certificateName, type: "string" },
+        { name: "remarks", value: remarks, type: "string" },
+        { name: "issuedTo", value:useraddress , type: "address" },
+        {name:"validity" , value: validity , type:"uint24"},
+        {name: "personName" , value: name+lastname , type:"string"}
+        ]);
+
+        const tx = await eas.attest({
+            schema: UID,
+            data: {
+              recipient: "0xFD50b031E778fAb33DfD2Fc3Ca66a1EeF0652165",
+              expirationTime: BigInt(0),
+              revocable: true, // Be aware that if your schema is not revocable, this MUST be false
+              data: encodedData,
+            },
+        });
+
+        const newAttestationUID = await tx.wait();
+
+        alert("Attestation Id"+ newAttestationUID);
+    }
 
 
     const mintnfthandler = async (ipnft: string, Useraddress: string, validitydate:string) => {
@@ -100,6 +139,9 @@ function page() {
       const ipnft = await uploadImage(files);
       console.log(ipnft);
       await mintnfthandler(ipnft , useraddress , validity); 
+      if (isCheckboxChecked) {
+        await attest();
+    }
 
       }
   
@@ -306,8 +348,22 @@ function page() {
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                             />
                         </div>
+
+                        <div className="mb-5" style={{display:'flex' , alignContent:'center' , gap:'2rem' }}>
+                            <label style={{display:'inline'}} className="mb-2.5 block text-black dark:text-white">
+                                Check to Attest
+                            </label>
+                            <input
+                                 style={{display:'inline'}}
+                                type="checkbox"
+                                checked={isCheckboxChecked}
+                                onChange={(e) => setIsCheckboxChecked(e.target.checked)}
+                                className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-primary dark:ring-offset-gray-800"
+                            />
+                        </div>
+
                         <button onClick={(e) => onSubmitHandler(e)} className="mb-3.5 mt-7.5 flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
-                            Sign In
+                           Issue Cert
                         </button>
                     </div>
                 </form>
