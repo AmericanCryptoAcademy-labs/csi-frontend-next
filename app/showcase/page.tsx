@@ -18,7 +18,8 @@ function Page() {
 
   const [nftArray, setnftArray] = useState<any>([]);
   const [loading, setloading] = useState<boolean>(false);
-  const [filterby, setFilterby] = useState<string[]>([]);
+  const [filterby, setFilterby] = useState<string>('');
+
 
 
   const fetchMyNFTs = async () => {
@@ -54,19 +55,13 @@ function Page() {
   }, [])
 
   const handleClickOnFilter = (tag: string) => {
-    setFilterby(prev => {
-      if (prev.includes(tag)) {
-        return prev.filter(item => item !== tag);
-      } else {
-        return [...prev, tag];
-      }
-    });
-    console.log(nftArray);
+    setFilterby(tag);
   };
+  
 
-  const isFilterActive = (tag: string) => {
-    return filterby.includes(tag);
-  };
+const isFilterActive = (tag: string) => {
+  return filterby === tag;
+};
 
 
   const certTypeReturn = (type: string) => {
