@@ -109,15 +109,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               {/* <!-- Menu Item Dashboard --> */}
 
+              
+
               <li>
                 <Link
                   href="/"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('DashBoard') &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4  &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                 >
-                  <svg
-                    className="fill-current"
+                 <svg
+                    className="fill-current mx-1 mr-0.5"
                     width="18"
                     height="18"
                     viewBox="0 0 18 18"
@@ -141,15 +143,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       fill=""
                     />
                   </svg>
-
-                  DashBoard
+                  Dashboard
                 </Link>
               </li>
 
               <li>
                 <Link
                   href="/issueCert"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('Issue Certificate') &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('issueCert') &&
                     'bg-graydark dark:bg-meta-4'
                     }`}
                 >
@@ -166,7 +167,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     'bg-graydark dark:bg-meta-4'
                     }`}
                 >
-                  <Icon className='text-2xl' icon="iwwa:assign" />
+                  <Icon className='text-2xl' icon="ant-design:safety-certificate-twotone" />
 
                   My Certificates
                 </Link>
