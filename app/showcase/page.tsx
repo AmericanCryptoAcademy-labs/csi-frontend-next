@@ -64,11 +64,12 @@ function Page() {
 
   useEffect(() => {
     fetchMyNFTs();
+    setfilteredCert(nftArray.filter(cert => certTypeReturn(cert.status.toString()) === filterby));
   }, []);
 
   useEffect(() => {
     setfilteredCert(nftArray.filter(cert => certTypeReturn(cert.status.toString()) === filterby));
-  },[filterby])
+  },[filterby , loading])
 
   const handleClickOnFilter = (tag: string) => {
     setFilterby(tag);
@@ -119,7 +120,7 @@ function Page() {
               {filteredCertificates.map((cert, index) => (
                 cert.tokenURI && ( //here i will ensure the certificate status is avaliable into the array or not 
                   <Link key={cert.NFTId} href={`/certificatePage/${cert.NFTId}`}>
-                    <Eventcard tokenId={cert.id} timeOfIssueance={cert.timeOfIssueance.toString()} tokenURI={cert.tokenURI} thumbnail={"/images/sample/sample.jpg"} certArray={nftArray} ></Eventcard>
+                    <Eventcard status={filterby} tokenId={cert.id} timeOfIssueance={cert.timeOfIssueance.toString()} tokenURI={cert.tokenURI} thumbnail={"/images/sample/sample.jpg"} certArray={nftArray} ></Eventcard>
                   </Link>
                 )
               ))}

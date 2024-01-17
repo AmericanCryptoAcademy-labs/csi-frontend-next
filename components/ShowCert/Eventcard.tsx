@@ -6,6 +6,7 @@ import { ethers } from 'ethers';
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from '@/utils/constant';
 
 export type cardType = {
+  status : string,
   tokenURI: string,
   thumbnail: any,
   timeOfIssueance: string,
@@ -33,13 +34,13 @@ function Eventcard(props: cardType) {
         // let tokenImagex = metadata.image;
         // setimage(tokenImagex);
 
-
       } catch (error) {
         console.error('Error fetching metadata:', error);
       }
     }
     fetchMetadata();
-  }, [tokenURI]);
+
+  }, [ props.status , props.tokenURI]);
 
 
   function getHumanReadableDateFromContract(timestamp) {
