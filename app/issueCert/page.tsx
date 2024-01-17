@@ -119,7 +119,7 @@ function Page() {
         }, 5000);
         return ipnft
     
-      }
+    }
 
     
 
