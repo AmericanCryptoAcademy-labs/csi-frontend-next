@@ -11,6 +11,17 @@ import { Button, Box, Center, Heading, VStack, HStack, Spinner, ChakraProvider }
 
 function Page() {
 
+  const certTypeReturn = (type: string) => {
+    console.log(type,"accac");
+    if (type === "0") {
+      return "Active"
+    } else if (type === "1") {
+      return "Expired"
+    } else {
+      return "Revoked"
+    }
+  }
+
   type CertInfo = {
     nfturl: string,
     issuedOn: number
@@ -18,7 +29,8 @@ function Page() {
 
   const [nftArray, setnftArray] = useState<any>([]);
   const [loading, setloading] = useState<boolean>(false);
-  const [filterby, setFilterby] = useState<string>('');
+  const [filterby, setFilterby] = useState<string>('Active');
+  const [filteredCertificates , setfilteredCert] = useState<any>([]);
 
 
 
@@ -52,28 +64,21 @@ function Page() {
 
   useEffect(() => {
     fetchMyNFTs();
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    setfilteredCert(nftArray.filter(cert => certTypeReturn(cert.status.toString()) === filterby));
+  },[filterby])
 
   const handleClickOnFilter = (tag: string) => {
     setFilterby(tag);
   };
   
 
-const isFilterActive = (tag: string) => {
-  return filterby === tag;
-};
+  const isFilterActive = (tag: string) => {
+    return filterby === tag;
+  };
 
-
-  const certTypeReturn = (type: string) => {
-    console.log(type,"accac");
-    if (type === "0") {
-      return "Active"
-    } else if (type === "1") {
-      return "Expired"
-    } else {
-      return "Revoked"
-    }
-  }
 
 
   return (
@@ -96,8 +101,8 @@ const isFilterActive = (tag: string) => {
           </button>
           <button
             className={`mx-2 bg-primary w-20 rounded-md text-white ${isFilterActive('Future') ? 'bg-red' : ''}`}
-            onClick={() => handleClickOnFilter('Future')}
-          >Future
+            onClick={() => handleClickOnFilter('Expired')}
+          >Expired
           </button>
 
         </div>
@@ -111,7 +116,7 @@ const isFilterActive = (tag: string) => {
             <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-2 gap-5 mt-5    ">
 
 
-              {nftArray.map((cert, index) => (
+              {filteredCertificates.map((cert, index) => (
                 cert.tokenURI && ( //here i will ensure the certificate status is avaliable into the array or not 
                   <Link key={cert.NFTId} href={`/certificatePage/${cert.NFTId}`}>
                     <Eventcard tokenId={cert.id} timeOfIssueance={cert.timeOfIssueance.toString()} tokenURI={cert.tokenURI} thumbnail={"/images/sample/sample.jpg"} certArray={nftArray} ></Eventcard>
