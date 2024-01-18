@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import ECommerce from "@/components/Dashboard/E-commerce";
 import { Metadata } from "next";
 
@@ -6,17 +6,17 @@ import { Metadata } from "next";
 import {ChakraProvider } from "@chakra-ui/react";
 
 // Importing Thirdweb Providers
-import {ThirdwebProvider,} from "@thirdweb-dev/react";
+// import {ThirdwebProvider,} from "@thirdweb-dev/react";
 
 export default function Home() {
   return (
     <>
       <ChakraProvider>
-        <ThirdwebProvider>
+        {/* <ThirdwebProvider> */}
 
         <ECommerce />
 
-        </ThirdwebProvider>
+        {/* </ThirdwebProvider> */}
     
       </ChakraProvider>     
     </>
