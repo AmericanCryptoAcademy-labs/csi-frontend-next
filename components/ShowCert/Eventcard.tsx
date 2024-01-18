@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from 'react'
 import sample from '../images/sampleCert/sample.jpg'
 import Image from 'next/image';
@@ -18,29 +19,40 @@ function Eventcard(props: cardType) {
 
   const [name, setname] = useState<string>();
   const [status, setStatus] = useState<string>('')
-  // const [image, setimage] = useState<string>('');
+  const [image, setimage] = useState<string>('');
+
+  const fetchMetadata = async () => {
+    try {
+      console.log(`Token URI ${tokenURI}`)
+
+      const response = await fetch(`https://ipfs.io/ipfs/${props.tokenURI}/metadata.json`);
+      // console.log(response)
+      const metadata = await response.json()
+      console.log('metadata',metadata);
+      // console.log(metadata.text());
+      const nameX = metadata.name; 
+      setname(nameX);
+
+      // fecthing image
+      // const response2 = await fetch(`https://ipfs.io/ipfs/${props.tokenURI}`);
+      // const metadata2 = await response2.json()
+      let tokenImagex =  metadata.image;
+      setimage(tokenImagex);
+      console.log("Image " ,image);
+
+      console.log("src content", image ?  image.replace('ipfs://', 'https://nftstorage.link/ipfs/')  : props.thumbnail)
+
+    } catch (error) {
+      console.error('Error fetching metadata:', error);
+    }
+  }
 
   useEffect(() => {
-    const fetchMetadata = async () => {
-      try {
-        console.log(`Token URI ${tokenURI}`)
-        const response = await fetch(`https://ipfs.io/ipfs/${tokenURI}/metadata.json`);
-        // console.log(response)
-        const metadata = await response.json();
-        console.log(metadata, "max");
-        // console.log(metadata.text())
-        setname(metadata.name);
-        // setStatus(metadata)
-        // let tokenImagex = metadata.image;
-        // setimage(tokenImagex);
+  
+    getNftInfo();
+    // fetchMetadata();
 
-      } catch (error) {
-        console.error('Error fetching metadata:', error);
-      }
-    }
-    fetchMetadata();
-
-  }, [ props.status , props.tokenURI]);
+  }, [ props.status , props.tokenURI , props.tokenId]);
 
 
   function getHumanReadableDateFromContract(timestamp) {
@@ -73,12 +85,13 @@ function Eventcard(props: cardType) {
       const tx = await aift.getCertificateDetails(props.tokenId.toString());
       setStatus(certTypeReturn(tx.status.toString()))
       // setcerttype(tx.status.toString());
+      fetchMetadata();
 
     } catch (error) {
       console.log('getNftInfo Function Error -> ', error)
     }
   }
-  getNftInfo()
+  
 
   var tokenURI = props.tokenURI;
   // console.log(thumbnail);
@@ -87,15 +100,29 @@ function Eventcard(props: cardType) {
       {status==="Active"&& <p className='absolute right-0 top-0 px-5 py-1 bg-meta-3 text-black-2 rounded-tr-lg rounded-bl-lg '>{status}</p>}
       {status==="Expired"&& <p className='absolute right-0 top-0 px-5 py-1 bg-red text-black-2 rounded-tr-lg rounded-bl-lg '>{status}</p>}
       {status==="Revoked"&& <p className='absolute right-0 top-0 px-5 py-1 bg-meta-6 text-black-2 rounded-tr-lg rounded-bl-lg '>{status}</p>}
-      
       <div className='w-full bg-stone-900 min-h-28 rounded-lg '>
-        <Image
-          src={props.thumbnail}
+        {
+          image !== "" ?
+        
+        <img
+         src =  {`${image.replace('ipfs://', 'https://nftstorage.link/ipfs/')}`}
           alt="Description of image"
           width={500}
           height={300}
-          layout="responsive"
-        />
+          // layout="responsive"
+        /> 
+        :
+        <img
+        src =  {`${props.thumbnail}`}
+         alt="Description of image"
+         width={500}
+         height={300}
+         // layout="responsive"
+       /> 
+
+
+
+  }
       </div>
       <div className='mt-5 flex justify-between px-'>
         <p className='text-center text-white text-xl font-semibold mb-2.5 '>{name}</p>

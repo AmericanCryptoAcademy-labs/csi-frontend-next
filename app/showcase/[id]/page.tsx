@@ -53,6 +53,8 @@ function Page({ params }) {
       setcerttype(tx.status.toString());
       console.log(certType);
 
+      fetchMetadata(tokenuri)
+
     } catch (error) {
       console.log('getNftInfo Function Error -> ', error)
     }
@@ -69,10 +71,14 @@ function Page({ params }) {
       const metadataName = metadata.name;
       setname(metadataName)
       setdescription(metadata.description)
-      setimage(metadata.image);
+      // setimage(metadata.image);
       setissuedTo(metadata.issuedTo);
       setloading(false)
-      let tokenImagex = metadata.image;
+
+      // fetching image
+      // const response2 = await fetch(`https://ipfs.io/ipfs/${tokenURI}`);
+      // const metadata2 = await response2.json()
+      let tokenImagex =  metadata.image;
       setimage(tokenImagex);
       setinstitute(metadata.issuerName);
       setcertName(metadata.certName);
@@ -170,19 +176,19 @@ function Page({ params }) {
     if (tokenuri) {
       fetchMetadata(tokenuri);
     }
-  }, [tokenuri]);
+  }, [tokenuri, params.id]);
 
   return (
     <>
 
       <div className='flex w-full'>
         <div className='w-1/2 pr-5'>
-          <Image
-            src="/images/sample/sample.jpg"
+          <img
+            src={ image ?  image.replace('ipfs://', 'https://nftstorage.link/ipfs/')  : "/images/sample/sample.jpg" }
             alt="Description of image"
             width={50}
             height={50}
-            layout="responsive"
+            // layout="responsive"
           />
         </div>
         <div className='w-1/2'>
