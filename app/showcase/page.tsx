@@ -7,12 +7,13 @@ import { ethers } from 'ethers'
 import Link from 'next/link';
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../../utils/constant';
 import { Button, Box, Center, Heading, VStack, HStack, Spinner, ChakraProvider } from '@chakra-ui/react';
+import CertificateCanvas from '@/components/CertificateCanvas/CertificateCanvas';
 
 
 function Page() {
 
   const certTypeReturn = (type: string) => {
-    console.log(type,"accac");
+    console.log(type, "accac");
     if (type === "0") {
       return "Active"
     } else if (type === "1") {
@@ -30,7 +31,7 @@ function Page() {
   const [nftArray, setnftArray] = useState<any>([]);
   const [loading, setloading] = useState<boolean>(false);
   const [filterby, setFilterby] = useState<string>('Active');
-  const [filteredCertificates , setfilteredCert] = useState<any>([]);
+  const [filteredCertificates, setfilteredCert] = useState<any>([]);
 
 
 
@@ -59,7 +60,6 @@ function Page() {
     } catch (error) {
       console.log('FetchMyNFTs Function Error -> ', error);
     }
-
   }
 
   useEffect(() => {
@@ -69,12 +69,12 @@ function Page() {
 
   useEffect(() => {
     setfilteredCert(nftArray.filter(cert => certTypeReturn(cert.status.toString()) === filterby));
-  },[filterby , loading])
+  }, [filterby, loading])
 
   const handleClickOnFilter = (tag: string) => {
     setFilterby(tag);
   };
-  
+
 
   const isFilterActive = (tag: string) => {
     return filterby === tag;
@@ -107,6 +107,7 @@ function Page() {
           </button>
 
         </div>
+        <CertificateCanvas />
         {
           loading ?
             <Center h={'30vh'} justifyContent={'center'} >
@@ -115,6 +116,7 @@ function Page() {
             :
 
             <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-2 gap-5 mt-5    ">
+
 
 
               {filteredCertificates.map((cert, index) => (

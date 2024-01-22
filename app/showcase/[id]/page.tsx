@@ -178,7 +178,7 @@ function Page({ params }) {
       <div className='flex w-full'>
         <div className='w-1/2 pr-5'>
           <Image
-            src="/images/sample/sample.jpg"
+            src="https://nftstorage.link/ipfs/bafybeifly7vo2u2tshvd5t2fbi472reouql36hf5kixk5aqvtot4ayj5ga/image.jpeg"
             alt="Description of image"
             width={50}
             height={50}
