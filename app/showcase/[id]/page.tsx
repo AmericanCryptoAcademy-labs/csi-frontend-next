@@ -183,12 +183,12 @@ function Page({ params }) {
 
       <div className='flex w-full'>
         <div className='w-1/2 pr-5'>
-          <img
+          <Image
             src={ image ?  image.replace('ipfs://', 'https://nftstorage.link/ipfs/')  : "/images/sample/sample.jpg" }
             alt="Description of image"
             width={50}
             height={50}
-            // layout="responsive"
+            layout="responsive"
           />
         </div>
         <div className='w-1/2'>
