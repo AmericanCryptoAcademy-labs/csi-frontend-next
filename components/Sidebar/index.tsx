@@ -172,6 +172,19 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   My Certificates
                 </Link>
               </li>
+
+              <li>
+                <Link
+                  href="/authorize"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('authorize') &&
+                    'bg-graydark dark:bg-meta-4'
+                    }`}
+                >
+                  <Icon className='text-2xl' icon="ic:twotone-manage-accounts" />
+
+                  Manage Teachers
+                </Link>
+              </li>
             </ul>
 
 

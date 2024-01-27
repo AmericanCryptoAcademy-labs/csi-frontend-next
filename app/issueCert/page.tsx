@@ -8,6 +8,9 @@ import { EAS, Offchain, SchemaEncoder, SchemaRegistry } from "@ethereum-attestat
 import { SignerOrProvider } from '@ethereum-attestation-service/eas-sdk/dist/transaction';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import createCertificate, { certData, dataURLtoBlob } from '@/components/IssueCertificate/CreateCertificate';
+import Image from 'next/image';
+import { blob } from 'stream/consumers';
 
 function Page() {
 
@@ -17,7 +20,7 @@ function Page() {
     const [remarks, setremarks] = useState<string>("");
     const [certificateName, setcertificateName] = useState<string>("")
     const [useraddress, setaddress] = useState<string>("");
-    const [validity, setvalidity] = useState<string>("")
+    const [validity, setvalidity] = useState<number>(0)
     const [url, seturl] = useState<string>('')
     const [isuploaded, setuploaded] = useState<string>();
     const [loading, setloading] = useState<boolean>(false)
@@ -27,6 +30,7 @@ function Page() {
     const [status, setstatus] = useState<string>('');
     const [institute, setinstitute] = useState<string>("");
     const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+    const [certificateSrc, setCertificateSrc] = useState<string>("");
 
 
     // defining  useRef for all inputes
@@ -125,43 +129,58 @@ function Page() {
 
     }
 
+    const generateCertificate = async (): Promise<string | null> => {
+        const instituteValue: string = instituteRef.current ? instituteRef.current.value : 'American Crypto Academy';
+        try {
+            const certData: certData = {
+                Organization: instituteValue,
+                StudentName: `${name} ${lastname}`,
+                CertificateName: certificateName,
+                Duration: validity, // Assuming validity is a string that needs to be parsed as an integer
+            };
+            console.log(certData, " for function call ");
 
+            const imageSrc = await createCertificate(certData);
+            console.log("settled the cert src", imageSrc);
+            return imageSrc; // Directly return the generated src
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    };
 
     // handle upload Function
     const onSubmitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
         setloading(true);
-        try {
-            event.preventDefault();
-            const files = fileRef.current.files[0];
-            console.log("File", files);
-            console.log(name, remarks, validity, useraddress, fileRef);
-            console.log("Validity of the Cert", validity);
 
-            if (name == "" || remarks == "" || validity == "" || useraddress == "" || files == undefined) {
-                alert("Please Fill All The Details");
-                setIsModalOpen(true);
-            } else {
-                const ipnft = await uploadImage(files);
-                console.log(ipnft);
-                await mintnfthandler(ipnft, useraddress, validity);
+        try {
+            const files = await generateCertificate();
+            console.log(files, "here is the certificate src");
+            setCertificateSrc(files);
+
+            // Proceed only if files is not null/undefined
+            if (files && name && remarks && validity && useraddress) {
+                const blobfile = dataURLtoBlob(files);
+                console.log(blobfile, " here is the blobfile");
+                const ipnft = await uploadImage(blobfile);
+                console.log(ipnft, "this is ipnft");
+                await mintnfthandler(ipnft, useraddress, `${validity}`);
                 if (isCheckboxChecked) {
                     await attest();
                 }
-                notifySuccess("Certificate issued successfully! "); // Show success toast
-
+                notifySuccess("Certificate issued successfully!"); // Show success toast
+            } else {
+                alert("Please Fill All The Details");
+                setIsModalOpen(true);
             }
 
         } catch (error) {
-            console.error(error.code); // Print the error on the consol
-            // // Display a generic error message for other types of errors
-            console.log(" handleUpload  error -> " + error)
+            console.error(error); // Print the error on the console
             notifyError("Error issuing certificate."); // Show error toast
-        }
-        finally {
+        } finally {
             setloading(false); // End loading
         }
-
     };
 
     const notifySuccess = (message: string) => {
@@ -194,8 +213,7 @@ function Page() {
         <>
             <ToastContainer />
             <Breadcrumb pageName="Issue Certificate" />
-
-            <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
+            {certificateSrc && <Image className='my-5 ' alt='Certificate' src={certificateSrc} width={400} height={400} unoptimized={true} />}            <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
                 <div className="flex flex-col gap-9">
                     {/* <!-- Contact Form --> */}
                     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -267,7 +285,7 @@ function Page() {
                                     <div className="relative">
                                         <input
                                             required
-                                            onChange={(event) => setvalidity(event.target.value)}
+                                            onChange={(event) => setvalidity(Number(event.target.value))}
                                             type="number"
                                             className="custom-input-date custom-input-date-1 w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                         />
@@ -395,7 +413,6 @@ function Page() {
                                     />
                                     <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Check to Attest</label>
                                 </div>
-
 
                                 <button
                                     onClick={(e) => onSubmitHandler(e)}
