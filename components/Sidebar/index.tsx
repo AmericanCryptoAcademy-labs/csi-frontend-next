@@ -62,13 +62,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+      className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
         <Link href="/">
-          <p className='text-center mx-auto text-4xl text-white'>LCERTS</p>
+          <p className="text-center mx-auto text-4xl text-white">LCERTS</p>
         </Link>
 
         <button
@@ -109,9 +110,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               {/* <!-- Menu Item Dashboard --> */}
 
-              
-
-              <li>
+              {/* <li>
                 <Link
                   href="/"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4  &&
@@ -145,17 +144,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   </svg>
                   Dashboard
                 </Link>
-              </li>
+              </li> */}
 
               <li>
                 <Link
                   href="/issueCert"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('issueCert') &&
-                    'bg-graydark dark:bg-meta-4'
-                    }`}
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 
+                  font-medium text-bodydark1 duration-300 ease-in-out 
+                  hover:bg-graydark dark:hover:bg-meta-4
+                  ${
+                    pathname.includes("issueCert") &&
+                    "bg-graydark dark:bg-meta-4"
+                  }`}
                 >
-                  <Icon className='text-2xl' icon="iwwa:assign" />
-
+                  <Icon className="text-2xl" icon="iwwa:assign" />
                   Issue Certificate
                 </Link>
               </li>
@@ -163,12 +165,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/showcase"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('showcase') &&
-                    'bg-graydark dark:bg-meta-4'
-                    }`}
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes("showcase") &&
+                    "bg-graydark dark:bg-meta-4"
+                  }`}
                 >
-                  <Icon className='text-2xl' icon="ant-design:safety-certificate-twotone" />
-
+                  <Icon
+                    className="text-2xl"
+                    icon="ant-design:safety-certificate-twotone"
+                  />
                   My Certificates
                 </Link>
               </li>
@@ -176,21 +181,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/authorize"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('authorize') &&
-                    'bg-graydark dark:bg-meta-4'
-                    }`}
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes("authorize") &&
+                    "bg-graydark dark:bg-meta-4"
+                  }`}
                 >
-                  <Icon className='text-2xl' icon="ic:twotone-manage-accounts" />
-
-                  Manage Teachers
+                  <Icon
+                    className="text-2xl"
+                    icon="ic:twotone-manage-accounts"
+                  />
+                  Manage Issuers
                 </Link>
               </li>
             </ul>
-
-
-
           </div>
-
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>

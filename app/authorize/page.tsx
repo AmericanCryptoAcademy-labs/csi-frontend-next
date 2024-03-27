@@ -98,21 +98,21 @@ function Page() {
                 <div className="h-fit rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark w-7/12">
                     <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
                         <h3 className="font-medium text-black dark:text-white">
-                            Manage Teachers
+                            Manage Issuers
                         </h3>
                     </div>
                     <div>
                         <div className="p-6.5 pb-4">
-                            <p className="text-lg mb-3">Address Of Teacher To Add</p>
+                            <p className="text-lg mb-3">Address Of Issuers To Add</p>
                             <div className="flex justify-between">
                                 <input
                                     onChange={(event) => setTeacherAddress(event.target.value)}
                                     type="text"
-                                    placeholder="Teacher Wallet Address"
+                                    placeholder="Issuers Wallet Address"
                                     className="mr-3 custom-input-date custom-input-date-1 w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                 />
                                 <button onClick={(e) => addteacher()} className='bg-primary px-5 rounded-md text-white w-4/12'>
-                                    Add Teacher
+                                    Add Issuers
                                 </button>
 
                             </div>
@@ -120,16 +120,16 @@ function Page() {
                         </div>
 
                         <div className="p-6.5">
-                            <p className="text-lg mb-3">Address Of Teacher To Remove</p>
+                            <p className="text-lg mb-3">Address Of Issuers To Remove</p>
                             <div className="flex justify-between">
                                 <input
                                     onChange={(event) => setTeacherAddress(event.target.value)}
                                     type="text"
-                                    placeholder="Teacher Wallet Address"
+                                    placeholder="Issuers Wallet Address"
                                     className="mr-3 custom-input-date custom-input-date-1 w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                 />
                                 <button onClick={() => removeteacher()} className='bg-primary px-5 rounded-md text-white w-4/12'>
-                                    Remove Teacher
+                                    Remove Issuers
                                 </button>
 
                             </div>
@@ -144,9 +144,8 @@ function Page() {
                         <div className="flex items-start justify-between border-b border-stroke py-5 px-6 dark:border-strokedark">
                             <div>
                                 <h2 className="mb-1.5 text-title-md2 font-bold text-black dark:text-white">
-                                    Authorized Teachers
+                                    Authorized Issuers
                                 </h2>
-                                <p className="text-sm font-medium">Most used resources</p>
                             </div>
                         </div>
 
