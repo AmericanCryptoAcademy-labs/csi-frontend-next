@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import whightLcertLogo from "../../public/images/logo/whiteLcertsLogo.png";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -67,9 +68,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
-      <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
+      <div className="flex items-center justify-between gap-2 px-6  ">
         <Link href="/">
-          <p className="text-center mx-auto text-4xl text-white">LCERTS</p>
+          <Image
+            src={whightLcertLogo}
+            alt="Logo"
+            className="cursor-pointer w-80"
+          />
         </Link>
 
         <button
