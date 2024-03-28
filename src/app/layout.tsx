@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { headers } from 'next/headers'
+import { cookieToInitialState } from 'wagmi'
+import { config } from '@/config'
+import { ChakraProvider } from "@chakra-ui/react";
+import { theme } from "@/theme";
+import Provider from "@/providers";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -14,9 +20,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialState = cookieToInitialState(config, headers().get('cookie'));
+
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+          <Provider initalState={initialState}>
+        <ChakraProvider theme={theme}>
+            {children}
+        </ChakraProvider>
+          </Provider>
+      </body>
     </html>
   );
 }
