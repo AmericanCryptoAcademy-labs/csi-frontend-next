@@ -18,3 +18,40 @@ export type TCSIOrg = {
 export type TCert = {
   abi: any;
 }
+
+export type TOrg = {
+  orgName: string;
+  orgDeployer: Address;
+  orgAddress: Address;
+}
+
+export type TLCert = {
+  certName: string;
+  certSymbol: string;
+  certAddress: Address;
+}
+
+// Params for create Org
+export type TCreateOrgParams = {
+  orgName: string;
+  orgAdmins: Address[] | string[];
+  orgIssuers: Address[] | string[];
+}
+
+// Params for create LCert contract
+export type TCreateLCertParams = {
+  name: string;
+  symbol: string;
+  maxSupply: number;
+  transferable: boolean;
+  revocable: boolean;
+  creator: Address;
+  issuersForCertificate: Address[] | string[];
+}
+
+export type TIssueLCertParams = {
+  to: Address;
+  tokenURI: string;
+  expInDays: number;
+}
+

@@ -1,12 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import { Box, Typography, Button, Input } from "@mui/material";
-import { useAccount, useReadContract, useReadContracts, useWriteContract } from "wagmi";
-import { Address } from "viem";
+import { useAccount, useWriteContract } from "wagmi";
 import { appAtom } from "@/store/AppStore";
 import { useAtom } from "jotai";
 import { PrimaryButton, AccountButton, StyledCard } from "@/components";
+import { TCreateOrgParams } from "@/types";
 import { Contracts } from "@/contracts";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -45,10 +44,10 @@ export default function CreateOrgSection() {
       setOrgAdmins(values.orgAdmins);
       setOrgIssuers(values.orgIssuers);
 
-      const args = {
+      const args: TCreateOrgParams = {
         orgName: values.orgName,
-        orgAdmins: values.orgAdmins.split(','),
-        orgIssuers: values.orgIssuers.split(','),
+        orgAdmins: values.orgAdmins.split(","),
+        orgIssuers: values.orgIssuers.split(","),
       }
       const value = (BigInt(10000000000000000));
       try {

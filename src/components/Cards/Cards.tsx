@@ -6,6 +6,7 @@ import { TPrimaryButtonProps } from "@/types";
 
 // how to add on click to this button?
 const StyledCard = styled(Box)(({ theme }) => ({
+  position: "relative",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",

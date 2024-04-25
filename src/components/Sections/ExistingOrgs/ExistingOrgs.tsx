@@ -5,32 +5,40 @@ import { appAtom } from "@/store/AppStore";
 import { useAtom } from "jotai";
 import { Address } from "viem";
 import { StyledCard } from "@/components/Cards/Cards";
-import { TExistingOrgProps } from "@/types";
+import { TExistingOrgProps, TOrg } from "@/types";
 
 export default function ExistingOrgsSection(props: TExistingOrgProps) {
   const [appState, setAppState] = useAtom(appAtom);
 
   return (
     <Box>
-      <Typography variant="h4">Existing Organizations</Typography>
-      <StyledCard>
-        {appState.allOrgs.map((org: any) => (
-          console.log("org", org),
-          <Box key={org.orgAddress}>
-            <Typography variant="h6">{org.name}</Typography>
-            <Typography variant="body1">{org.deployer}</Typography>
-            <Typography variant="body1">{org.orgAddress}</Typography>
+        {appState.allOrgs.map((org: TOrg, index: number) => (
+          <StyledCard
+            key={index}
+          >
+          <Box 
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}  
+          >
+            <Typography variant="h6">Org Name: {org.orgName}</Typography>
+            <Typography variant="body1">Deployer: {org.orgDeployer}</Typography>
+            <Typography variant="body1">Address: {org.orgAddress}</Typography>
+           
             
             <Button
               variant="contained"
               color="primary"
-              onClick={() => props.setCreateLcertState("CREATE_LCERT")}
+              onClick={() => props.setEnumState(org)}
             >
               Create License Certificate
             </Button>
           </Box>
-        ))}
       </StyledCard>
+        ))}
     </Box>
   )
 }

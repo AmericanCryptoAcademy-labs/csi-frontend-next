@@ -12,11 +12,11 @@ import { shortenAddress } from "@/helpers";
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { Contracts, CSI_DELEGATE_ROLE, ORG_ADMIN_ROLE } from '@/contracts';
 import allowedAddresses from "../../helpers/allowedAddresses.json";
+import { TOrg } from "@/types";
 
 
 export default function Header() {
   const [appState, setAppState] = useAtom(appAtom);
-  console.log("appState", appState)
   const { address, isConnected } = useAccount();
   const { open, close } = useWeb3Modal()
   const [orgsInfo, setOrgsInfo] = useState([]);
@@ -45,8 +45,8 @@ export default function Header() {
   const canCreateOrg = allowedAddresses.includes(address as Address)
 
   const fetchData = async () => {
-    let userOrgs = [];
-    const contractCalls = await _allOrgs?.map((org: any) => ({
+    let userOrgs: any[] = [];
+    const contractCalls = await _allOrgs?.map((org: TOrg) => ({
       abi: Contracts.CSIOrg.abi,
       address: org.orgAddress,
       functionName: 'hasRole',
@@ -60,15 +60,24 @@ export default function Header() {
         ]
       });
 
-      userOrgs = res.map((org: any, index: number) => {
-        if (org) {
-          return _allOrgs[index];
+      userOrgs = res.map((result: any, index: number) => {
+        if (result) {
+          return {
+            orgName: _allOrgs[index].name,
+            orgDeployer: _allOrgs[index].deployer,
+            orgAddress: _allOrgs[index].orgAddress,
+          }
         }
-      });
+      })
     }
 
     const isAdmin: boolean = await _isCsiAdmin.data as boolean;
-    const allOrgs = await _allOrgs;
+    const allOrgs: TOrg[] = await _allOrgs.map((org: any) => ({
+      orgName: org.name,
+      orgDeployer: org.deployer,
+      orgAddress: org.orgAddress,
+    }));
+
     setAppState(
       (prev) => ({
         ...prev,
@@ -76,7 +85,7 @@ export default function Header() {
         canCreateOrg: canCreateOrg,
         isCsiDelegate: isAdmin,
         allOrgs: allOrgs,
-        userOrgs: userOrgs,
+        userOrgs: userOrgs as TOrg[],
       })
     )
   }

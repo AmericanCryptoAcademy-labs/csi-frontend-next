@@ -3,7 +3,7 @@ import React from "react";
 import { Box, useTheme } from "@mui/material";
 import { Header, SideBar } from "@/components"
 
-export default function PageLayout({ children, theme }: { children: React.ReactNode, theme?: any }) {
+export default function PageLayout({ children, theme }: { children: React.ReactNode, theme: any }) {
   return (
     <Box sx={{
       position: 'absolute',

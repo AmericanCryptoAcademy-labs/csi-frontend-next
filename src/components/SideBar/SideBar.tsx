@@ -62,11 +62,14 @@ export default function SideBar() {
         </Link>
 
         {/* Issue LCret */}
-
-        <Typography variant="body1">
-          Issue LCret
-        </Typography>
-
+        <Link href="/issueLCert">
+          <Typography variant="body1">
+            <Icon sx={{ marginRight: 1 }}>add</Icon>
+            Issue LCret
+          </Typography>
+        </Link>
+          
+        {/* View My LCrets */}
         <Typography variant="body1">
           View My LCrets
         </Typography>

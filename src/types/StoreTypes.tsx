@@ -1,12 +1,13 @@
 import { Address } from 'viem';
+import { TOrg } from './ContractTypes';
 
 export type TAPPAtom = {
   address: Address | null;
   isCsiDelegate: boolean;
   canCreateOrg: boolean;
-  allOrgs: any;
-  userOrgs?: any;
-  selectedOrg?: any;
+  allOrgs: TOrg[];
+  userOrgs?: TOrg[];
+  selectedOrg?: TOrg;
   userLCerts?: any;
   selectedLCert?: any;
 }
