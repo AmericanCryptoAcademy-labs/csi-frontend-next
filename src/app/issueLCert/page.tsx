@@ -12,14 +12,11 @@ enum EIssueCerts {
 export default function IssueCerts() {
   const [issueCertsState, setIssueCertsState] = useState<EIssueCerts>(EIssueCerts.CHOOSE_ORG);
   const [chosenOrg, setChosenOrg] = useState<TOrg>();
-  const [chosenLcert, setChosenLcert] = useState<any>();
-
 
   const handleClickChoseOrg = (org: TOrg) => {
     setChosenOrg(org);
     setIssueCertsState(EIssueCerts.CHOOSE_LCERT);
   };
-
 
   return (
     <Box>

@@ -18,7 +18,6 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const config = useConfig();
   const { writeContract: writeIssueCert, error } = useWriteContract();
-  console.log(" write issue cert error: ", error);
 
   const issueLCertForm = useFormik({
     initialValues: {
@@ -41,6 +40,22 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
       });
     }
   });
+
+  const createCanvas = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const files = await generateCertificate();
+    setCertificateSrc(files)
+
+    try {
+      const blobfile = dataURLtoBlob(files);
+      const ipnft = await uploadImage(blobfile);
+      console.log(ipnft, "this is Ipnt");
+
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
 
   const fetchLCertsForOrg = async (org: TOrg) => {
     const lcertAddresses: any = await readContract(config, {
