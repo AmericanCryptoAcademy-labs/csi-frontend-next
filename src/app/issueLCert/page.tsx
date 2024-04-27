@@ -19,7 +19,17 @@ export default function IssueCerts() {
   };
 
   return (
-    <Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+        height: "100%",
+        backgroundColor: "background.paper",
+      }}
+    >
       {issueCertsState === EIssueCerts.CHOOSE_ORG && (
         <ExistingOrgsSection setEnumState={handleClickChoseOrg} />  
       )}

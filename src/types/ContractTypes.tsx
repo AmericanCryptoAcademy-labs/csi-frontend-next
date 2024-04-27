@@ -50,8 +50,19 @@ export type TCreateLCertParams = {
 }
 
 export type TIssueLCertParams = {
+  firstName: string;
+  lastName: string;
+  certName: string;
+  remarks: string,
+  issuedTo: string,
+  orgName: string,
+  description: string,
+  dateIssued: string,
+  dateExpired: string,
+}
+
+export type TIssueLCertContractParams = {
   to: Address;
   tokenURI: string;
   expInDays: number;
 }
-
