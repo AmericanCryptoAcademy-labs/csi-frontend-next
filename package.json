@@ -16,6 +16,7 @@
     "formik": "^2.4.6",
     "jotai": "^2.8.0",
     "next": "14.2.3",
+    "nft.storage": "^7.1.1",
     "react": "^18",
     "react-dom": "^18",
     "styled-components": "^6.1.8",

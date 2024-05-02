@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Box, Button, Typography, Collapse, Input, Select } from "@mui/material";
 import { useAtom } from "jotai";
@@ -12,14 +12,21 @@ import { Contracts } from "@/contracts";
 import { Address } from "viem";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import createCertificate, { certData, dataURLtoBlob } from "./createCertificate";
+import certbg1 from '../../../../public/images/certBackrounds/6.png'
+import { NFTStorage, File } from "nft.storage"
+
 
 export default function ExistingOrgsSection(props: TExistingLCertProps) {
   const [appState, setAppState] = useAtom(appAtom);
   const [lCerts, setLCerts] = useState<TLCert[]>([]);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [chosenCertBackground, setChosenCertBackground] = useState<string>("");
+  const [certificateSrc, setCertificateSrc] = useState<string|null>("")
   const config = useConfig();
   const { writeContract: writeIssueCert, error } = useWriteContract();
+  const instituteRef = useRef(null);
+  const [url, seturl] = useState<string>('')
 
 
   // ADD CREATE CANVAS HERE AND FIX THE LAYOUT OF THE FORM TO FIT WHAT YOU HAD BEFORE
@@ -79,8 +86,10 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
     onSubmit: async (values: any) => {
       values.certName = lCerts[expandedIndex as number].certName;
       console.log(values);
-
-      // create Image here and upload to IPFS
+      
+      mintnfthandler(event, url, values.expInDays);    // this function will mint the certificate with the metadata link as tokenURI
+      
+      // create Image here and upload to IPFS 
 
       // Get image ipfs link and create metadata file with the data and the link as image
 
@@ -113,20 +122,98 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
   //   }
   // });
 
-  const createCanvas = async (event: React.FormEvent) => {
+  const generateCertificate = async (): Promise<string | null> => {
+    const instituteValue: string = issueLCertForm.getFieldProps("orgName").value;
+    try {
+        const certData: certData = {
+            Organization: issueLCertForm.getFieldProps("orgName").value,
+            StudentName: issueLCertForm.getFieldProps("firstName").value + " " + issueLCertForm.getFieldProps("lastName").value,
+            CertificateName: issueLCertForm.getFieldProps("certName").value,
+            Duration: issueLCertForm.getFieldProps("expInDays").value, // Assuming validity is a string that needs to be parsed as an integer
+            certBg: certbg1.src
+        };
+        console.log(certData, " for function call ");
+
+        const imageSrc = await createCertificate(certData);
+        console.log("settled the cert src", imageSrc);
+        return imageSrc; // Directly return the generated src
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
+  const createCanvas=async(event: React.FormEvent)=>{
     event.preventDefault();
-    const files = await generateCertificate();
+    const files = await generateCertificate(); // This will return the image src
     setCertificateSrc(files)
 
-    try {
-      const blobfile = dataURLtoBlob(files);
-      const ipnft = await uploadImage(blobfile);
-      console.log(ipnft, "this is Ipnt");
-
+    try{
+      const blobfile = files && dataURLtoBlob(files); // This will convert the image src to a blob file
+      if (blobfile) {
+        const ipnft = await uploadImage(blobfile); // This will upload the image to IPFS and return the IPFS link
+        console.log(ipnft,"this is Ipnt");
+      }
     }
-    catch (err) {
+    catch(err){
       console.log(err);
     }
+  }
+
+
+const uploadImage = async (imageData: Blob): Promise<string> => {
+        // setloading(true)
+        const nftstorage = new NFTStorage({ token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDAzM2Y5Mzc1ZEQ5ODY1YzhmN2FiODVENGRiRTM3NDhERWI4NTljRkYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4NTc3MTE1MDk5NiwibmFtZSI6IlBBUkszIn0.eHLoAl-RBIxAqXmHm_KTQ553Ha-_18sZrnoxuXpGxMI` })
+
+        // Check if instituteRef.current is not null
+        const instituteValue: string = issueLCertForm.getFieldProps("orgName").value 
+
+        // Send request to store image
+        const { ipnft } = await nftstorage.store({ 
+            image: new File([imageData], "image.jpeg", { type: "image/jpeg" }),
+            name: issueLCertForm.getFieldProps("firstName").value,
+            lastname: issueLCertForm.getFieldProps("lastName").value,
+            certName: issueLCertForm.getFieldProps("certName").value,
+            remarks: issueLCertForm.getFieldProps("remarks").value,
+            validity: issueLCertForm.getFieldProps("expInDays").value,
+            issuedTo: issueLCertForm.getFieldProps("issuedTo").value,
+            issuerName: instituteValue,
+            description: `
+              ${issueLCertForm.getFieldProps("firstName").value} +' ' +
+              ${issueLCertForm.getFieldProps("lastName").value} +' ' + 
+              ${issueLCertForm.getFieldProps("certName").value} +' ' + 
+              ${issueLCertForm.getFieldProps("remarks").value} +' ' + 
+              ${issueLCertForm.getFieldProps("expInDays").value} +' ' + 
+              ${issueLCertForm.getFieldProps("issuedTo").value} +' ' + 
+              ${instituteValue} +' ' + 
+              ${issueLCertForm.getFieldProps("description").value} +' ' + 
+              ${issueLCertForm.getFieldProps("selectedBackground").value}`
+        }) // This will store the image and return the IPFS link
+ 
+        // Save the URL
+        // const NFturl = `https://ipfs.io/ipfs/${ipnft}/metadata.json`
+        seturl(ipnft)
+        // Set showUploadAlert to true after uploadImage function is completed
+        return ipnft
+    }
+
+    const mintnfthandler = async (e: any, ipnft: string, validitydate: string) => {
+      e.preventDefault();
+      // setloading(true)
+      createCanvas(e);
+      
+      let nextTokenId: any = 1;
+      let expireTimestamp = new Date().getTime() + (Number(validitydate) * 24 * 60 * 60 * 1000);
+      const args = {
+          reciever: issueLCertForm.getFieldProps("issuedTo").value,
+          tokenId: nextTokenId + 1,
+          tokenUri: ipnft, // need to set this up    -> done:settled this into createCanvas function(it will generate and print the ipnft token)
+          _expire: Number(expireTimestamp),
+      }
+      console.log(args, " mint args")
+
+      // HERE NEED TO CALL THE FUNCTION FROM SMART CONTRACT TO MINT THE CERTIFICATE 
+      // ALSO HAVE TO PASS THE MESSAGE THROUGH TOAST WEATER IT IS SUCCESS OR FAILURE 
   }
 
   const fetchLCertsForOrg = async (org: TOrg) => {
@@ -187,7 +274,10 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
         height: "100%",
       }}
     >
-      {lCerts.map((lCert, index) => (
+    {
+      certificateSrc&&<Image width={100} height={100} src={certificateSrc} alt="Certificate" />
+    } 
+     {lCerts.map((lCert, index) => (
         <StyledCard key={index}>
           <Box
             sx={{
@@ -427,6 +517,7 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
                   ) : null}
 
                 </Box>
+                <button onClick={(e)=>createCanvas(e)} >create canvas</button>
                 <Button onClick={() => issueLCertForm.handleSubmit()} >Issue Certificate</Button>
               </Box>
             </Collapse>
