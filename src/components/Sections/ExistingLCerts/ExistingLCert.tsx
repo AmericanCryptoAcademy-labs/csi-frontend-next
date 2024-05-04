@@ -58,6 +58,8 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
     }
   */
 
+  const { writeContract:mintCertificate, error:mintCertificateError, isSuccess :mintCertificateSuccess } = useWriteContract()
+
   const issueLCertForm = useFormik({
     initialValues: {
       firstName: "",
@@ -79,9 +81,9 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
       issuedTo: yup.string().required("Required"),
       orgName: yup.string().required("Required"),
       description: yup.string().required("Required"),
-      dateIssued: yup.string().required("Required"),
+      // dateIssued: yup.string().required("Required"),
       expInDays: yup.string().required("Required"),
-      selectedBackground: yup.string().required("Required"),
+      // selectedBackground: yup.string().required("Required"),
     }),
     onSubmit: async (values: any) => {
       values.certName = lCerts[expandedIndex as number].certName;
@@ -89,6 +91,56 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
       
       mintnfthandler(event, url, values.expInDays);    // this function will mint the certificate with the metadata link as tokenURI
       
+      const tokenURI = `ipfs://${url}`;
+      console.log(tokenURI, "tokenURI max");
+      
+      
+      mintCertificate({
+        abi: Contracts.Cert.abi,
+        address: '0xE649e4A5f1F269685d09b1245bE829039fa3781e',
+        functionName: "mint",
+        args: [
+          values.issuedTo, 
+          tokenURI,
+          values.expInDays,
+        ],
+      });
+      console.log(mintCertificateError, "mintCertificateError");
+      console.log(mintCertificateSuccess, "mintCertificateSuccess");
+    }
+
+    // values.issuedTo,
+    // tokenURI,
+    // values.expInDays,
+
+    // values.issuedTo, works
+    // values.expInDays,
+    // tokenURI,
+
+    // tokenURI,
+    // values.issuedTo,
+    // values.expInDays,
+
+    // tokenURI,
+    // values.expInDays,
+    // values.issuedTo,
+
+    // values.expInDays,
+    // values.issuedTo,
+    // tokenURI,
+
+    // values.expInDays,
+    // tokenURI,
+    // values.issuedTo,
+    // abc
+    // acb
+    // bac
+    // bca
+    // cab
+    // cba
+      
+
+      //Function to mint the certificate with the metadata link as tokenURI, reciever address and expiry in days
       // create Image here and upload to IPFS 
 
       // Get image ipfs link and create metadata file with the data and the link as image
@@ -97,8 +149,8 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
 
       // create the certificate with the metadata link as tokenURI
     
-    }
-  });
+    })
+  
 
   // const issueLCertForm = useFormik({
   //   initialValues: {
@@ -122,6 +174,8 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
   //   }
   // });
 
+
+
   const generateCertificate = async (): Promise<string | null> => {
     const instituteValue: string = issueLCertForm.getFieldProps("orgName").value;
     try {
@@ -135,7 +189,7 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
         console.log(certData, " for function call ");
 
         const imageSrc = await createCertificate(certData);
-        console.log("settled the cert src", imageSrc);
+        // console.log("settled the cert src", imageSrc);
         return imageSrc; // Directly return the generated src
     } catch (error) {
         console.error(error);
@@ -211,6 +265,7 @@ const uploadImage = async (imageData: Blob): Promise<string> => {
           _expire: Number(expireTimestamp),
       }
       console.log(args, " mint args")
+
 
       // HERE NEED TO CALL THE FUNCTION FROM SMART CONTRACT TO MINT THE CERTIFICATE 
       // ALSO HAVE TO PASS THE MESSAGE THROUGH TOAST WEATER IT IS SUCCESS OR FAILURE 
@@ -491,7 +546,7 @@ const uploadImage = async (imageData: Blob): Promise<string> => {
                 {/* Background */}  
                 {/* let user choose backrounds from pulic/image/certBackgrounds */}
                   
-                <Box>
+                {/* <Box>
                   <Select
                     id="selectedBackground"
                     sx={{
@@ -516,7 +571,7 @@ const uploadImage = async (imageData: Blob): Promise<string> => {
                     <div>{issueLCertForm.errors.selectedBackground}</div>
                   ) : null}
 
-                </Box>
+                </Box> */}
                 <button onClick={(e)=>createCanvas(e)} >create canvas</button>
                 <Button onClick={() => issueLCertForm.handleSubmit()} >Issue Certificate</Button>
               </Box>
