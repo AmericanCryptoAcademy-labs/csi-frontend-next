@@ -5,6 +5,7 @@ export interface certData {
     Organization: string
     certBg:string
 }
+
 export default function createCertificate(certData: certData): Promise<string> {
     return new Promise((resolve, reject) => {
         const canvas = document.createElement('canvas');
