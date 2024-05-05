@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Box, Button, Typography, Collapse, Input, Select } from "@mui/material";
+import { Box, Button, Typography, Collapse, Input, InputLabel, MenuItem, Select, FormControl } from "@mui/material";
 import { useAtom } from "jotai";
 import { appAtom } from "@/store/AppStore";
 import { StyledCard } from "@/components/Cards/Cards";
@@ -15,6 +15,7 @@ import * as yup from "yup";
 import PreviewAndIssueModal from "./modal/PreviewAndIssue";
 import createCertificate, { certData, dataURLtoBlob } from "./createCertificate";
 import { NFTStorage, File } from "nft.storage"
+import CertificateForm from "./common/CertificateForm";
 
 import certbg1 from '../../../../public/images/certBackrounds/1.png'
 import certbg2 from '../../../../public/images/certBackrounds/2.png'
@@ -94,55 +95,23 @@ RIGHT:
 
 
 export default function ExistingOrgsSection(props: TExistingLCertProps) {
-  const [open, setOpen] = useState(false);
   const [appState, setAppState] = useAtom(appAtom);
+  const [open, setOpen] = useState(false);
   const [lCerts, setLCerts] = useState<TLCert[]>([]);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
-  const [chosenCertBackground, setChosenCertBackground] = useState<string>("");
+  const [chosenCertBackground, setChosenCertBackground] = useState(Backgrounds[0].src)
+  console.log("Chosen Cert Background", chosenCertBackground)
   const [certificateSrc, setCertificateSrc] = useState<string | null>("")
   const config = useConfig();
   const instituteRef = useRef(null);
   const [url, seturl] = useState<string>('')
   const { writeContract: mintCertificate, error: mintCertificateError, isSuccess: mintCertificateSuccess } = useWriteContract()
 
-  console.log("Chosen Cert Background", chosenCertBackground)
-  const issueLCertForm = useFormik({
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      certName: lCerts[expandedIndex as number]?.certName,
-      remarks: "",
-      issuedTo: "",
-      orgName: props.org?.orgName || "",
-      description: "",
-      dateIssued: new Date().toISOString(),
-      expInDays: "",
-      selectedBackground: "",
-    },
-    validationSchema: yup.object({
-      firstName: yup.string().required("Required"),
-      lastName: yup.string().required("Required"),
-      certName: yup.string().required("Required"),
-      remarks: yup.string().required("Required"),
-      issuedTo: yup.string().required("Required"),
-      orgName: yup.string().required("Required"),
-      description: yup.string().required("Required"),
-      // dateIssued: yup.string().required("Required"),
-      expInDays: yup.string().required("Required"),
-      // selectedBackground: yup.string().required("Required"),
-    }),
-    onSubmit: async (values: any) => {
-      console.log(values);
-      MintCertificate(values);
-    }
-  });
+  console.log("Chosen Cert certificateSrc", certificateSrc)
 
   const MintCertificate = async (values: any) => {
     values.certName = lCerts[expandedIndex as number].certName;
-    console.log(values);
-
     const tokenURI = `ipfs://${url}`;
-    console.log(tokenURI, "tokenURI max");
 
     mintCertificate({
       abi: Contracts.Cert.abi,
@@ -158,43 +127,44 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
     console.log(mintCertificateSuccess, "mintCertificateSuccess");
   }
 
-
   const handleCreateCanvas = async (event: React.FormEvent) => {
-    event.preventDefault();
-    await createCanvas(event);
-    setOpen(true);
+    // event.preventDefault();
+    await createCanvas(event).then(() => {
+      setOpen(true);
+    });
   }
 
-  const generateCertificate = async (): Promise<string | null> => {
-    const instituteValue: string = issueLCertForm.getFieldProps("orgName").value;
+  const generateCertificate = async (values: any): Promise<string | null> => {
+    console.log("Values", values)
+    console.log("Trying to generate certificate")
+    const instituteValue: string = values.orgName;
     try {
       const certData: certData = {
-        Organization: issueLCertForm.getFieldProps("orgName").value,
-        StudentName: issueLCertForm.getFieldProps("firstName").value + " " + issueLCertForm.getFieldProps("lastName").value,
+        Organization: values.orgName,
+        StudentName: values.firstName + " " + values.lastName,
         CertificateName: lCerts[expandedIndex as number].certName,
-        Duration: issueLCertForm.getFieldProps("expInDays").value, // Assuming validity is a string that needs to be parsed as an integer
+        Duration: values.expInDays, // Assuming validity is a string that needs to be parsed as an integer
         certBg: chosenCertBackground
       };
-
       const imageSrc = await createCertificate(certData);
-      // console.log("settled the cert src", imageSrc);
       return imageSrc; // Directly return the generated src
     } catch (error) {
+      console.log("Error generating certificate", error);
       console.error(error);
       return null;
     }
   };
 
-  const createCanvas = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const files = await generateCertificate(); // This will return the image src
+  const createCanvas = async (values: any) => {
+    // event.preventDefault();
+    const files = await generateCertificate(values); // This will return the image src
+    console.log("Files", files)
     setCertificateSrc(files)
 
     try {
       const blobfile = files && dataURLtoBlob(files); // This will convert the image src to a blob file
       if (blobfile) {
-        const ipnft = await uploadImage(blobfile); // This will upload the image to IPFS and return the IPFS link
-        console.log(ipnft, "this is Ipnt");
+        const ipnft = await uploadImage(blobfile, values); // This will upload the image to IPFS and return the IPFS link
       }
     }
     catch (err) {
@@ -202,33 +172,33 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
     }
   }
 
-  const uploadImage = async (imageData: Blob): Promise<string> => {
+  const uploadImage = async (imageData: Blob, values: any): Promise<string> => {
     // setloading(true)
     const nftstorage = new NFTStorage({ token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDAzM2Y5Mzc1ZEQ5ODY1YzhmN2FiODVENGRiRTM3NDhERWI4NTljRkYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4NTc3MTE1MDk5NiwibmFtZSI6IlBBUkszIn0.eHLoAl-RBIxAqXmHm_KTQ553Ha-_18sZrnoxuXpGxMI` })
 
     // Check if instituteRef.current is not null
-    const instituteValue: string = issueLCertForm.getFieldProps("orgName").value
+    const instituteValue: string = values.orgName
 
     // Send request to store image
     const { ipnft } = await nftstorage.store({
       image: new File([imageData], "image.jpeg", { type: "image/jpeg" }),
-      name: issueLCertForm.getFieldProps("firstName").value,
-      lastname: issueLCertForm.getFieldProps("lastName").value,
-      certName: issueLCertForm.getFieldProps("certName").value,
-      remarks: issueLCertForm.getFieldProps("remarks").value,
-      validity: issueLCertForm.getFieldProps("expInDays").value,
-      issuedTo: issueLCertForm.getFieldProps("issuedTo").value,
+      name: values.firstName,
+      lastname: values.lastName,
+      certName: values.certName,
+      remarks: values.remarks,
+      validity: values.expInDays,
+      issuedTo: values.issuedTo,
       issuerName: instituteValue,
       description: `
-              ${issueLCertForm.getFieldProps("firstName").value} +' ' +
-              ${issueLCertForm.getFieldProps("lastName").value} +' ' + 
-              ${issueLCertForm.getFieldProps("certName").value} +' ' + 
-              ${issueLCertForm.getFieldProps("remarks").value} +' ' + 
-              ${issueLCertForm.getFieldProps("expInDays").value} +' ' + 
-              ${issueLCertForm.getFieldProps("issuedTo").value} +' ' + 
+              ${values.firstName} +' ' +
+              ${values.lastName} +' ' + 
+              ${values.certName} +' ' + 
+              ${values.remarks} +' ' + 
+              ${values.expInDays} +' ' + 
+              ${values.issuedTo} +' ' + 
               ${instituteValue} +' ' + 
-              ${issueLCertForm.getFieldProps("description").value} +' ' + 
-              ${issueLCertForm.getFieldProps("selectedBackground").value}`
+              ${values.description} +' ' + 
+              ${values.selectedBackground}`
     }) // This will store the image and return the IPFS link
 
     // Save the URL
@@ -312,15 +282,6 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
         height: "100%",
       }}
     >
-      {
-        open && <PreviewAndIssueModal 
-          open={open} 
-          onClose={() => setOpen(false)} 
-          certData={issueLCertForm.values} 
-          imgSrc={certificateSrc || ""} 
-          mintCertificate={() => MintCertificate(issueLCertForm.values)}
-        />
-      }
       {lCerts.map((lCert, index) => (
         <StyledCard key={index}>
           <Box
@@ -329,7 +290,7 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              width: "100%",
+              minWidth: "100%",
             }}
           >
             <Typography variant="h6">Certificate Name: {lCert.certName}</Typography>
@@ -340,230 +301,19 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
             >
               {expandedIndex === index ? 'Close Form' : 'Issue a LCert'}
             </Button>
-            <Collapse in={expandedIndex === index}>
-              <Box sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                margin: 2
-              }}>
-
-                {/* First Name */}
-                <Box>
-                  <Input
-                    id="firstName"
-                    type="text"
-                    placeholder="First Name"
-                    security="true"
-                    sx={{
-                      margin: 1,
-                      borderRadius: "6px",
-                      backgroundColor: "white",
-                      color: "black",
-                      width: "100%",
-                      height: "40px",
-                      padding: "10px",
-                    }}
-                    {...issueLCertForm.getFieldProps("firstName")}
-                  />
-                  {issueLCertForm.touched.firstName && issueLCertForm.errors.firstName ? (
-                    <div>{issueLCertForm.errors.firstName}</div>
-                  ) : null}
-                </Box>
-
-                {/* Last Name */}
-                <Box>
-                  <Input
-                    id="lastName"
-                    type="text"
-                    placeholder="Last Name"
-                    security="true"
-                    sx={{
-                      margin: 1,
-                      borderRadius: "6px",
-                      backgroundColor: "white",
-                      color: "black",
-                      width: "100%",
-                      height: "40px",
-                      padding: "10px",
-                    }}
-                    {...issueLCertForm.getFieldProps("lastName")}
-                  />
-                  {issueLCertForm.touched.lastName && issueLCertForm.errors.lastName ? (
-                    <div>{issueLCertForm.errors.lastName}</div>
-                  ) : null}
-                </Box>
-
-                {/* Certificate Name */}
-                <Box>
-                  <Input
-                    id="certName"
-                    type="text"
-                    security="true"
-                    disabled
-                    sx={{
-                      margin: 1,
-                      borderRadius: "6px",
-                      backgroundColor: "white",
-                      color: "black",
-                      width: "100%",
-                      height: "40px",
-                      padding: "10px",
-                    }}
-                    value={lCert.certName}
-                  />
-
-                </Box>
-
-                {/* Remarks */}
-                <Box>
-                  <Input
-                    id="remarks"
-                    type="text"
-                    placeholder="Remarks"
-                    security="true"
-                    sx={{
-                      margin: 1,
-                      borderRadius: "6px",
-                      backgroundColor: "white",
-                      color: "black",
-                      width: "100%",
-                      height: "40px",
-                      padding: "10px",
-                    }}
-                    {...issueLCertForm.getFieldProps("remarks")}
-                  />
-                  {issueLCertForm.touched.remarks && issueLCertForm.errors.remarks ? (
-                    <div>{issueLCertForm.errors.remarks}</div>
-                  ) : null}
-                </Box>
-
-                {/* Issued To */}
-                <Box>
-                  <Input
-                    id="issuedTo"
-                    type="text"
-                    placeholder="Issued To"
-                    security="true"
-                    sx={{
-                      margin: 1,
-                      borderRadius: "6px",
-                      backgroundColor: "white",
-                      color: "black",
-                      width: "100%",
-                      height: "40px",
-                      padding: "10px",
-                    }}
-                    {...issueLCertForm.getFieldProps("issuedTo")}
-                  />
-                  {issueLCertForm.touched.issuedTo && issueLCertForm.errors.issuedTo ? (
-                    <div>{issueLCertForm.errors.issuedTo}</div>
-                  ) : null}
-
-                </Box>
-
-                {/* Organization Name */}
-                <Box>
-                  <Input
-                    id="orgName"
-                    type="text"
-                    value={props.org?.orgName}
-                    disabled
-                    security="true"
-                    sx={{
-                      margin: 1,
-                      borderRadius: "6px",
-                      backgroundColor: "white",
-                      color: "black",
-                      width: "100%",
-                      height: "40px",
-                      padding: "10px",
-                    }}
-                  />
-                  {issueLCertForm.touched.orgName && issueLCertForm.errors.orgName ? (
-                    <div>{issueLCertForm.errors.orgName}</div>
-                  ) : null}
-                </Box>
-
-                {/* Description */}
-                <Box>
-                  <Input
-                    id="description"
-                    type="text"
-                    placeholder="Description"
-                    security="true"
-                    sx={{
-                      margin: 1,
-                      borderRadius: "6px",
-                      backgroundColor: "white",
-                      color: "black",
-                      width: "100%",
-                      height: "40px",
-                      padding: "10px",
-                    }}
-                    {...issueLCertForm.getFieldProps("description")}
-                  />
-                  {issueLCertForm.touched.description && issueLCertForm.errors.description ? (
-                    <div>{issueLCertForm.errors.description}</div>
-                  ) : null}
-                </Box>
-
-                {/* Exp in Days */}
-                <Box>
-                  <Input
-                    id="expInDays"
-                    type="text"
-                    placeholder="Exp in Days"
-                    security="true"
-                    sx={{
-                      margin: 1,
-                      borderRadius: "6px",
-                      backgroundColor: "white",
-                      color: "black",
-                      width: "100%",
-                      height: "40px",
-                      padding: "10px",
-                    }}
-                    {...issueLCertForm.getFieldProps("expInDays")}
-                  />
-                  {issueLCertForm.touched.expInDays && issueLCertForm.errors.expInDays ? (
-                    <div>{issueLCertForm.errors.expInDays}</div>
-                  ) : null}
-
-                </Box>
-
-                {/* Background */}
-                {/* let user choose backrounds from pulic/image/certBackgrounds */}
-                <Collapse in={expandedIndex === index}>
-                  <Select
-                    id="selectedBackground"
-                    sx={{
-                      margin: 1,
-                      borderRadius: "6px",
-                      backgroundColor: "white",
-                      color: "black",
-                      width: "100%",
-                      height: "40px",
-                      padding: "10px",
-                    }}
-                    {...issueLCertForm.getFieldProps("selectedBackground")}
-                  >
-                    {
-                      Backgrounds.map((background, index) => (
-                        <Box key={index} onClick={() => setChosenCertBackground(background.src)}>
-                          <Image src={background.src} alt="Certificate" width={100} height={100} />
-                        </Box>
-                      ))
-                    }
-                  </Select>
-                </Collapse>
-             
-                <Button 
-                  onClick={(e) => handleCreateCanvas(e)}
-                >
-                  Create Certificate
-                </Button>
-              </Box>
+            <Collapse in={expandedIndex === index} timeout="auto" unmountOnExit sx={{ width: '100%' }}>
+              <CertificateForm 
+                index={index} 
+                certData={lCert}
+                certName={lCert.certName} 
+                certificateSrc={certificateSrc}
+                orgName={props.org?.orgName}
+                orgData={props.org}
+                mintCert={MintCertificate}
+                createCanvas={handleCreateCanvas}
+                open={open}
+                onClose={() => setOpen(false)}
+              />
             </Collapse>
           </Box>
         </StyledCard>

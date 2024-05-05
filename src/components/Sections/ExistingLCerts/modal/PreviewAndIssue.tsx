@@ -6,13 +6,12 @@ import { Box, Button, Typography, Modal } from "@mui/material";
 type TPreviewAndIssueModalProps = {
   open: boolean;
   onClose: () => void;
-  certData: any;
   imgSrc: string;
   mintCertificate: () => void;
 };
 
-export default function PreviewAndIssueModal({ open, onClose, certData, imgSrc, mintCertificate }: TPreviewAndIssueModalProps) {
-
+export default function PreviewAndIssueModal({ open, onClose, imgSrc, mintCertificate }: TPreviewAndIssueModalProps) {
+  
   return (
     <Modal
       open={open}
