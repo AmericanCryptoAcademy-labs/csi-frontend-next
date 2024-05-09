@@ -4,13 +4,11 @@ import { Box, Typography, Button, Input } from "@mui/material";
 import { useAccount, useWriteContract } from "wagmi";
 import { appAtom } from "@/store/AppStore";
 import { useAtom } from "jotai";
-import { PrimaryButton, AccountButton, StyledCard } from "@/components";
 import { TCreateOrgParams } from "@/types";
 import { Contracts } from "@/contracts";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { validateAddresses } from "@/helpers";
-import { theme } from "@/theme";
 
 export default function CreateOrgSection() {
   const [appState, setAppState] = useAtom(appAtom);
@@ -18,7 +16,11 @@ export default function CreateOrgSection() {
   const [orgAdmins, setOrgAdmins] = useState<any>([]);
   const [orgIssuers, setOrgIssuers] = useState<any>([]);
   const { address } = useAccount();
-  const { writeContract, error: createOrgError, isSuccess: createOrgSuccess } = useWriteContract();
+  const {
+    writeContract,
+    error: createOrgError,
+    isSuccess: createOrgSuccess,
+  } = useWriteContract();
 
   const createOrgForm = useFormik({
     initialValues: {
@@ -28,16 +30,20 @@ export default function CreateOrgSection() {
     },
     validationSchema: Yup.object({
       orgName: Yup.string().required("Required"),
-      orgAdmins: Yup.string().required("Admins are required").test(
-        "is-valid-array",
-        "Admins must beee a valid list of Ethereum addresses",
-        value => validateAddresses(value)
-      ),
-      orgIssuers: Yup.string().required("Issuers are required").test(
-        "is-valid-array",
-        "Issuers must be a valid list of Ethereum addresses",
-        value => validateAddresses(value)
-      ),
+      orgAdmins: Yup.string()
+        .required("Admins are required")
+        .test(
+          "is-valid-array",
+          "Admins must beee a valid list of Ethereum addresses",
+          (value) => validateAddresses(value)
+        ),
+      orgIssuers: Yup.string()
+        .required("Issuers are required")
+        .test(
+          "is-valid-array",
+          "Issuers must be a valid list of Ethereum addresses",
+          (value) => validateAddresses(value)
+        ),
     }),
     onSubmit: async (values) => {
       setOrgName(values.orgName);
@@ -48,8 +54,8 @@ export default function CreateOrgSection() {
         orgName: values.orgName,
         orgAdmins: values.orgAdmins.split(","),
         orgIssuers: values.orgIssuers.split(","),
-      }
-      const value = (BigInt(10000000000000000));
+      };
+      const value = BigInt(10000000000000000);
       try {
         await writeContract({
           abi: Contracts.CSI.abi,
@@ -58,156 +64,80 @@ export default function CreateOrgSection() {
           args: [args.orgName, args.orgAdmins, args.orgIssuers],
           value: value,
         });
-
       } catch (e) {
         console.error(e);
       }
-
     },
   });
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        padding: "32px",
-      }}
-    >
-      <Typography
-        variant="h1"
-        sx={{ alignSelf: "flex-start" }}
-      >
-        Create an Organization
-      </Typography>
-
+    <div className="w-1/2 mx-4 my-4 ">
       {/* Create Org Card */}
-      <StyledCard>
-        <Typography variant="h2">
-          Organization Details
-        </Typography>
-        <form onSubmit={createOrgForm.handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%" }}>
-          {/* Org Name */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "8px",
-             
-              minWidth: "100%",
-            }}
-          >
-            <label 
-              htmlFor="orgName"
-              style={{ color: theme.palette.text.primary, fontSize: "22px" }}
-            >
-                Organization Name
-            </label>
-            <Input
-              id="orgName"
-              name="orgName"
-              type="text"
-              onChange={createOrgForm.handleChange}
-              value={createOrgForm.values.orgName}
-              sx={{ 
-                width: "100%",
-                padding: "8px",
-                border: "1px solid",
-                borderColor: createOrgForm.errors.orgName && createOrgForm.touched.orgName ? "red" : "black",
-                borderRadius: "6px",
-                background: theme.palette.primary.main,
-                color: "#000",
-              }}
-            />
-            {createOrgForm.errors.orgName && createOrgForm.touched.orgName && (
-              <div>{createOrgForm.errors.orgName}</div>
-            )}
-          </Box>
+      <div className="rounded-sm border shadow-default border-[#2E3A47] bg-[#24303F]  ">
+        <div className="border-b py-4 px-6.5 border-[#2E3A47]">
+          <h3 className="font-medium  text-white mx-6 text-xl">
+            Organization Details
+          </h3>
+        </div>
 
-          {/* Org Admins */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "8px",
-             
-              minWidth: "100%",
-            }}
+        <div className="p-6 ">
+          <form
+            onSubmit={createOrgForm.handleSubmit}
+            className="flex flex-col gap-4 w-full"
           >
-            <label 
-              htmlFor="orgAdmins"
-              style={{ color: theme.palette.text.primary, fontSize: "22px" }}
-            >
+            <div className="w-full ">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Organization name
+              </label>
+              <input
+                id="orgName"
+                name="orgName"
+                type="text"
+                onChange={createOrgForm.handleChange}
+                value={createOrgForm.values.orgName}
+                placeholder="Enter organization name"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+              />
+            </div>
+
+            <div className="w-full ">
+              <label className="mb-2.5 block text-black dark:text-white">
                 Admins
-            </label>
-            <Input
-              id="orgAdmins"
-              name="orgAdmins"
-              type="text"
-              onChange={createOrgForm.handleChange}
-              value={createOrgForm.values.orgAdmins}
-              sx={{ 
-                width: "100%",
-                padding: "8px",
-                border: "1px solid",
-                borderColor: createOrgForm.errors.orgAdmins && createOrgForm.touched.orgAdmins ? "red" : "black",
-                borderRadius: "6px",
-                background: theme.palette.primary.main,
-                color: "#000",
-              }}
-            />
-            {createOrgForm.errors.orgAdmins && createOrgForm.touched.orgAdmins && (
-              <div>{createOrgForm.errors.orgAdmins}</div>
-            )}
-          </Box>
+              </label>
+              <input
+                id="orgAdmins"
+                name="orgAdmins"
+                type="text"
+                onChange={createOrgForm.handleChange}
+                value={createOrgForm.values.orgAdmins}
+                placeholder="Enter admins by saperating with comma"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+              />
+            </div>
 
-          {/* Org Issuers */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "8px",
-             
-              minWidth: "100%",
-            }}
-          >
-            <label 
-              htmlFor="orgIssuers"
-              style={{ color: theme.palette.text.primary, fontSize: "22px" }}
-            >
+            <div className="w-full ">
+              <label className="mb-2.5 block text-black dark:text-white">
                 Issuers
-            </label>
-            <Input
-              id="orgIssuers"
-              name="orgIssuers"
-              type="text"
-              onChange={createOrgForm.handleChange}
-              value={createOrgForm.values.orgIssuers}
-              sx={{ 
-                width: "100%",
-                padding: "8px",
-                border: "1px solid",
-                borderColor: createOrgForm.errors.orgIssuers && createOrgForm.touched.orgIssuers ? "red" : "black",
-                borderRadius: "6px",
-                background: theme.palette.primary.main,
-                color: "#000",
-              }}
-            />
-            {createOrgForm.errors.orgIssuers && createOrgForm.touched.orgIssuers && (
-              <div>{createOrgForm.errors.orgIssuers}</div>
-            )}
-          </Box>
+              </label>
+              <input
+                id="orgIssuers"
+                name="orgIssuers"
+                type="text"
+                onChange={createOrgForm.handleChange}
+                value={createOrgForm.values.orgIssuers}
+                placeholder="Enter issuers by saperating with comma"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+              />
+            </div>
 
-          <PrimaryButton type="submit">Create Organization</PrimaryButton>
-        </form>
-
-      </StyledCard>
-    </Box>
-  )
+            <button
+              className={`mb-7 mt-2 flex w-full justify-center rounded bg-[#3d51e0] p-2.5 font-medium text-gray text-xl }`}
+            >
+              Create Organization
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 }

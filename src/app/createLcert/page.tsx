@@ -21,17 +21,8 @@ export default function CreateLcert() {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        minHeight: "100vh",
-        minWidth: "100%",
-        background: theme.palette.background.paper,
-      }}
-    >
-      <Typography variant="h4">Create License Certificate</Typography>
+    <div className="w-full bg-[#1b222d] p-4 h-full">
+      <p className="font-semibold text-2xl ">Create License Certificate</p>
       {createLcertState === ECreateLcert.CHOOSE_ORG && (
         <Box>
           <ExistingOrgsSection setEnumState={handleClick} />
@@ -41,6 +32,6 @@ export default function CreateLcert() {
       {createLcertState === ECreateLcert.CREATE_LCERT && (
         <CreateLcertSection chosenOrg={chosenOrg} setCreateLcertState={setCreateLcertState} />
       )}
-    </Box>
+    </div>
   )
 }

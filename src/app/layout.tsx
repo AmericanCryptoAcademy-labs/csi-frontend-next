@@ -3,7 +3,7 @@ import Providers from "./providers";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "@/theme";
 import { PageLayout } from "@/components";
-
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Create Next App",

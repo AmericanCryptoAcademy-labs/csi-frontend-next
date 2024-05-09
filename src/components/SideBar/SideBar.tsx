@@ -53,11 +53,11 @@ export default function SideBar() {
           </Typography>
         </Link>
 
-        {/* Create LCret */}
+        {/* Create LCert */}
         <Link href="/createLcert">
           <Typography variant="body1">
             <Icon sx={{ marginRight: 1 }}>add</Icon>
-            Create LCret
+            Create LCert
           </Typography>
         </Link>
 
