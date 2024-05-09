@@ -104,7 +104,7 @@ function CertificateForm({
               id={`firstName-${index}`}
               type="text"
               {...issueLCertForm.getFieldProps("firstName")}
-              placeholder="Enter organization name"
+              placeholder="Enter First Name"
               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
             />
           </div>
@@ -117,7 +117,7 @@ function CertificateForm({
               id={`lastName-${index}`}
               type="text"
               {...issueLCertForm.getFieldProps("lastName")}
-              placeholder="Enter organization name"
+              placeholder="Enter Last Name"
               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
             />
           </div>
@@ -131,7 +131,7 @@ function CertificateForm({
             id={`remarks-${index}`}
             type="text"
             {...issueLCertForm.getFieldProps("remarks")}
-            placeholder="Enter organization name"
+            placeholder="Enter remarks"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
           />
         </div>
@@ -145,7 +145,7 @@ function CertificateForm({
             id={`issuedTo-${index}`}
             type="text"
             {...issueLCertForm.getFieldProps("issuedTo")}
-            placeholder="Enter organization name"
+            placeholder="Enter issued to"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
           />
         </div>
@@ -158,7 +158,7 @@ function CertificateForm({
             id={`description-${index}`}
             type="text"
             {...issueLCertForm.getFieldProps("description")}
-            placeholder="Enter organization name"
+            placeholder="Enter description"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
           />
         </div>
