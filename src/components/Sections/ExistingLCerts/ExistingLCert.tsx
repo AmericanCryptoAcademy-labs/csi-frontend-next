@@ -40,6 +40,7 @@ import certbg7 from "../../../../public/images/certBackrounds/7.png";
 import certbg8 from "../../../../public/images/certBackrounds/8.png";
 import certbg9 from "../../../../public/images/certBackrounds/9.png";
 import certbg10 from "../../../../public/images/certBackrounds/10.png";
+import { supabase } from "@/config/supabase.config";
 
 const Backgrounds = [
   certbg1,
@@ -114,18 +115,24 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
   const [chosenCertBackground, setChosenCertBackground] = useState(
     Backgrounds[0].src
   );
-  console.log("Chosen Cert Background", chosenCertBackground);
   const [certificateSrc, setCertificateSrc] = useState<string | null>("");
   const config = useConfig();
   const instituteRef = useRef(null);
   const [url, seturl] = useState<string>("");
+  const [tokenURI, setTokenURI] = useState<string>("");
+  const [issuedTo, setIssuedTo] = useState<Address>('0x');
   const {
     writeContract: mintCertificate,
     error: mintCertificateError,
     isSuccess: mintCertificateSuccess,
+    status:mintstatus
   } = useWriteContract();
 
-  console.log("Chosen Cert certificateSrc", certificateSrc);
+  useEffect(()=>{
+    if(mintstatus==="success"){
+      saveIpfsTokenAtSupabase(tokenURI, issuedTo);
+    }
+  },[mintstatus])
 
   const MintCertificate = async (values: any) => {
     values.certName = lCerts[expandedIndex as number].certName;
@@ -137,8 +144,44 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
       functionName: "mint",
       args: [values.issuedTo, tokenURI, values.expInDays],
     });
+
+    setTokenURI(tokenURI);
+    setIssuedTo(values.issuedTo);
+    
     console.log(mintCertificateError, "mintCertificateError");
     console.log(mintCertificateSuccess, "mintCertificateSuccess");
+  };
+
+  const saveIpfsTokenAtSupabase = async (
+    ipfsToken: string,
+    issueuser: string
+  ) => {
+    
+    const { data, error } = await supabase
+      .from("Lcerts")
+      .select()
+      .eq("wallet_address", issueuser);
+      // let existingTokens= data[0]?.ipfs_token;
+    if (data?.length === 0) {
+      //need to insert some data along with address which will newly add
+
+      const { error } = await supabase
+        .from("Lcerts")
+        .insert({ wallet_address: issueuser, ipfs_token: [ipfsToken] });
+      console.log(data, error, "data and error2");
+    } else {
+      // need to update the data
+      let existingCerts = data?.[0]?.ipfs_token
+      existingCerts.push(ipfsToken)
+      console.log(existingCerts, "existingCerts");
+      
+      const { error } = await supabase
+        .from("Lcerts")
+        .update({ ipfs_token: existingCerts})
+        .eq("wallet_address", issueuser);
+        console.log(error, "error");
+    }
+    console.log(data, error, "data and error");
   };
 
   const handleCreateCanvas = async (event: React.FormEvent) => {

@@ -22,6 +22,7 @@ import certbg8 from "../../../../../public/images/certBackrounds/8.png";
 import certbg9 from "../../../../../public/images/certBackrounds/9.png";
 import certbg10 from "../../../../../public/images/certBackrounds/10.png";
 import SelectBgDialog from "./SelectBgDialog.component";
+import { supabase } from "@/config/supabase.config";
 
 const Backgrounds = [
   certbg1,
@@ -51,7 +52,6 @@ function CertificateForm({
     Backgrounds[0]
   );
   const [certBg, setCertBg] = useState<string>("");
-  console.log(selectedBackground);
 
   const issueLCertForm = useFormik({
     initialValues: {
@@ -77,10 +77,11 @@ function CertificateForm({
       expInDays: yup.string().required("Required"),
     }),
     onSubmit: async (values) => {
-      values.certBg=certBg
+      values.certBg = certBg;
       createCanvas(values);
     },
   });
+
 
   return (
     <form onSubmit={issueLCertForm.handleSubmit}>
@@ -178,15 +179,19 @@ function CertificateForm({
 
           <div className="w-2/3 ">
             <label className="mb-2.5 block text-black dark:text-white">
-            Choose Background
+              Choose Background
             </label>
             <SelectBgDialog setCertBg={setCertBg} />
           </div>
         </div>
 
-
         {/* Additional fields can be added here similarly */}
-        <button className="bg-[#3d50e1] py-2.5 text-white rounded w-full " type="submit">Submit</button>
+        <button
+          className="bg-[#3d50e1] py-2.5 text-white rounded w-full "
+          type="submit"
+        >
+          Submit
+        </button>
       </div>
     </form>
   );

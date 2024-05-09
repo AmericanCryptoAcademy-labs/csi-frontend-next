@@ -10,26 +10,32 @@ enum EIssueCerts {
 }
 
 export default function IssueCerts() {
-  const [issueCertsState, setIssueCertsState] = useState<EIssueCerts>(EIssueCerts.CHOOSE_ORG);
-  const [chosenOrg, setChosenOrg] = useState<TOrg>({orgName: "", orgDeployer: "0x", orgAddress: "0x"});
+  const [issueCertsState, setIssueCertsState] = useState<EIssueCerts>(
+    EIssueCerts.CHOOSE_ORG
+  );
+  const [chosenOrg, setChosenOrg] = useState<TOrg>({
+    orgName: "",
+    orgDeployer: "0x",
+    orgAddress: "0x",
+  });
 
   const handleClickChoseOrg = (org: TOrg) => {
     setChosenOrg(org);
     setIssueCertsState(EIssueCerts.CHOOSE_LCERT);
   };
 
+
   return (
     <div className="w-full bg-[#1b222d] p-4 h-full">
       {issueCertsState === EIssueCerts.CHOOSE_ORG && (
-        <ExistingOrgsSection setEnumState={handleClickChoseOrg} />  
+        <ExistingOrgsSection setEnumState={handleClickChoseOrg} />
       )}
 
       {issueCertsState === EIssueCerts.CHOOSE_LCERT && (
         <Box>
-          <ExistingLCertsSection  org={chosenOrg}/>
+          <ExistingLCertsSection org={chosenOrg} />
         </Box>
       )}
-
     </div>
   );
 }

@@ -28,10 +28,7 @@ interface Props {
 export default function SelectBgDialog(props: Props) {
   const predesignedBgList = [bg1, bg2, bg3, bg4, bg5, bg6, bg7, bg8, bg9, bg10];
   const [open, setOpen] = React.useState(false);
-  predesignedBgList.map((e) =>
-    console.log(e.src, e)
-    
-  );
+  
   const handleClickOpen = (event:React.FormEvent) => {
     event.preventDefault()
     setOpen(true);
