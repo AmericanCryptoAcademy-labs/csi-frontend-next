@@ -337,7 +337,7 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
   return (
     <div>
       {lCerts.map((lCert, index) => (
-        <div className="w-full">
+        <div key={index} className="w-full">
           <div className="w-1/2 bg-[#24303F] my-2 py-3 rounded-lg px-5 justify-between">
             <div className=" flex my-2 py- rounded-lg px-5 justify-between">
               <p className="my-auto text-2xl font-semibold">
