@@ -61,11 +61,11 @@ export default function SideBar() {
           </Typography>
         </Link>
 
-        {/* Issue LCret */}
+        {/* Issue LCert */}
         <Link href="/issueLCert">
           <Typography variant="body1">
             <Icon sx={{ marginRight: 1 }}>add</Icon>
-            Issue LCret
+            Issue LCert
           </Typography>
         </Link>
           

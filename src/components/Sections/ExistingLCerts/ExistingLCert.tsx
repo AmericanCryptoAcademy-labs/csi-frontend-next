@@ -1,7 +1,17 @@
-'use client';
+"use client";
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Box, Button, Typography, Collapse, Input, InputLabel, MenuItem, Select, FormControl } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Collapse,
+  Input,
+  InputLabel,
+  MenuItem,
+  Select,
+  FormControl,
+} from "@mui/material";
 import { useAtom } from "jotai";
 import { appAtom } from "@/store/AppStore";
 import { StyledCard } from "@/components/Cards/Cards";
@@ -13,20 +23,23 @@ import { Address } from "viem";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import PreviewAndIssueModal from "./modal/PreviewAndIssue";
-import createCertificate, { certData, dataURLtoBlob } from "./createCertificate";
-import { NFTStorage, File } from "nft.storage"
+import createCertificate, {
+  certData,
+  dataURLtoBlob,
+} from "./createCertificate";
+import { NFTStorage, File } from "nft.storage";
 import CertificateForm from "./common/CertificateForm";
 
-import certbg1 from '../../../../public/images/certBackrounds/1.png'
-import certbg2 from '../../../../public/images/certBackrounds/2.png'
-import certbg3 from '../../../../public/images/certBackrounds/3.png'
-import certbg4 from '../../../../public/images/certBackrounds/4.png'
-import certbg5 from '../../../../public/images/certBackrounds/5.png'
-import certbg6 from '../../../../public/images/certBackrounds/6.png'
-import certbg7 from '../../../../public/images/certBackrounds/7.png'
-import certbg8 from '../../../../public/images/certBackrounds/8.png'
-import certbg9 from '../../../../public/images/certBackrounds/9.png'
-import certbg10 from '../../../../public/images/certBackrounds/10.png'
+import certbg1 from "../../../../public/images/certBackrounds/1.png";
+import certbg2 from "../../../../public/images/certBackrounds/2.png";
+import certbg3 from "../../../../public/images/certBackrounds/3.png";
+import certbg4 from "../../../../public/images/certBackrounds/4.png";
+import certbg5 from "../../../../public/images/certBackrounds/5.png";
+import certbg6 from "../../../../public/images/certBackrounds/6.png";
+import certbg7 from "../../../../public/images/certBackrounds/7.png";
+import certbg8 from "../../../../public/images/certBackrounds/8.png";
+import certbg9 from "../../../../public/images/certBackrounds/9.png";
+import certbg10 from "../../../../public/images/certBackrounds/10.png";
 
 const Backgrounds = [
   certbg1,
@@ -38,8 +51,8 @@ const Backgrounds = [
   certbg7,
   certbg8,
   certbg9,
-  certbg10
-]
+  certbg10,
+];
 
 /*
 TODO: 
@@ -93,21 +106,26 @@ RIGHT:
 
 */
 
-
 export default function ExistingOrgsSection(props: TExistingLCertProps) {
   const [appState, setAppState] = useAtom(appAtom);
   const [open, setOpen] = useState(false);
   const [lCerts, setLCerts] = useState<TLCert[]>([]);
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
-  const [chosenCertBackground, setChosenCertBackground] = useState(Backgrounds[0].src)
-  console.log("Chosen Cert Background", chosenCertBackground)
-  const [certificateSrc, setCertificateSrc] = useState<string | null>("")
+  const [expandedIndex, setExpandedIndex] = useState<number | null>();
+  const [chosenCertBackground, setChosenCertBackground] = useState(
+    Backgrounds[0].src
+  );
+  console.log("Chosen Cert Background", chosenCertBackground);
+  const [certificateSrc, setCertificateSrc] = useState<string | null>("");
   const config = useConfig();
   const instituteRef = useRef(null);
-  const [url, seturl] = useState<string>('')
-  const { writeContract: mintCertificate, error: mintCertificateError, isSuccess: mintCertificateSuccess } = useWriteContract()
+  const [url, seturl] = useState<string>("");
+  const {
+    writeContract: mintCertificate,
+    error: mintCertificateError,
+    isSuccess: mintCertificateSuccess,
+  } = useWriteContract();
 
-  console.log("Chosen Cert certificateSrc", certificateSrc)
+  console.log("Chosen Cert certificateSrc", certificateSrc);
 
   const MintCertificate = async (values: any) => {
     values.certName = lCerts[expandedIndex as number].certName;
@@ -117,26 +135,22 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
       abi: Contracts.Cert.abi,
       address: lCerts[expandedIndex as number].certAddress,
       functionName: "mint",
-      args: [
-        values.issuedTo,
-        tokenURI,
-        values.expInDays,
-      ],
+      args: [values.issuedTo, tokenURI, values.expInDays],
     });
     console.log(mintCertificateError, "mintCertificateError");
     console.log(mintCertificateSuccess, "mintCertificateSuccess");
-  }
+  };
 
   const handleCreateCanvas = async (event: React.FormEvent) => {
     // event.preventDefault();
     await createCanvas(event).then(() => {
       setOpen(true);
     });
-  }
+  };
 
   const generateCertificate = async (values: any): Promise<string | null> => {
-    console.log("Values", values)
-    console.log("Trying to generate certificate")
+    console.log("Values", values);
+    console.log("Trying to generate certificate");
     const instituteValue: string = values.orgName;
     try {
       const certData: certData = {
@@ -144,7 +158,7 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
         StudentName: values.firstName + " " + values.lastName,
         CertificateName: lCerts[expandedIndex as number].certName,
         Duration: values.expInDays, // Assuming validity is a string that needs to be parsed as an integer
-        certBg: chosenCertBackground
+        certBg: values.certBg,
       };
       const imageSrc = await createCertificate(certData);
       return imageSrc; // Directly return the generated src
@@ -158,26 +172,27 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
   const createCanvas = async (values: any) => {
     // event.preventDefault();
     const files = await generateCertificate(values); // This will return the image src
-    console.log("Files", files)
-    setCertificateSrc(files)
+    console.log("Files", files);
+    setCertificateSrc(files);
 
     try {
       const blobfile = files && dataURLtoBlob(files); // This will convert the image src to a blob file
       if (blobfile) {
         const ipnft = await uploadImage(blobfile, values); // This will upload the image to IPFS and return the IPFS link
       }
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const uploadImage = async (imageData: Blob, values: any): Promise<string> => {
     // setloading(true)
-    const nftstorage = new NFTStorage({ token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDAzM2Y5Mzc1ZEQ5ODY1YzhmN2FiODVENGRiRTM3NDhERWI4NTljRkYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4NTc3MTE1MDk5NiwibmFtZSI6IlBBUkszIn0.eHLoAl-RBIxAqXmHm_KTQ553Ha-_18sZrnoxuXpGxMI` })
+    const nftstorage = new NFTStorage({
+      token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDAzM2Y5Mzc1ZEQ5ODY1YzhmN2FiODVENGRiRTM3NDhERWI4NTljRkYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4NTc3MTE1MDk5NiwibmFtZSI6IlBBUkszIn0.eHLoAl-RBIxAqXmHm_KTQ553Ha-_18sZrnoxuXpGxMI`,
+    });
 
     // Check if instituteRef.current is not null
-    const instituteValue: string = values.orgName
+    const instituteValue: string = values.orgName;
 
     // Send request to store image
     const { ipnft } = await nftstorage.store({
@@ -198,15 +213,15 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
               ${values.issuedTo} +' ' + 
               ${instituteValue} +' ' + 
               ${values.description} +' ' + 
-              ${values.selectedBackground}`
-    }) // This will store the image and return the IPFS link
+              ${values.selectedBackground}`,
+    }); // This will store the image and return the IPFS link
 
     // Save the URL
     // const NFturl = `https://ipfs.io/ipfs/${ipnft}/metadata.json`
-    seturl(ipnft)
+    seturl(ipnft);
     // Set showUploadAlert to true after uploadImage function is completed
-    return ipnft
-  }
+    return ipnft;
+  };
 
   // IF YOU NEED TO FETCH THE NEXT TOKEN ID USE THIS DONT HARD CODE IT
   const fetchNextTokenId = async (address: Address) => {
@@ -214,52 +229,57 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
       abi: Contracts.Cert.abi,
       address: address,
       functionName: "totalSupply",
-      args: []
+      args: [],
     });
-    
+
     if (nextTokenId) {
       return Number(nextTokenId) + 1;
     } else {
       return 1;
     }
-  }
+  };
 
   const fetchLCertsForOrg = async (org: TOrg) => {
     const lcertAddresses: any = await readContract(config, {
       abi: Contracts.CSIOrg.abi,
       address: org.orgAddress,
       functionName: "getCertificates",
-      args: []
+      args: [],
     });
 
-    const promises = lcertAddresses?.map((certAddress: Address) => fetchLCertData(certAddress));
+    const promises = lcertAddresses?.map((certAddress: Address) =>
+      fetchLCertData(certAddress)
+    );
     const lcertData = await Promise.all(promises);
     setLCerts(lcertData);
-  }
+  };
 
   const fetchLCertData = async (certAddress: Address): Promise<TLCert> => {
     const lCertNamePromise = readContract(config, {
       abi: Contracts.Cert.abi,
       address: certAddress,
       functionName: "name",
-      args: []
+      args: [],
     });
 
     const lCertSymbolPromise = readContract(config, {
       abi: Contracts.Cert.abi,
       address: certAddress,
       functionName: "symbol",
-      args: []
+      args: [],
     });
 
-    const [lCertName, lCertSymbol] = await Promise.all([lCertNamePromise, lCertSymbolPromise]);
+    const [lCertName, lCertSymbol] = await Promise.all([
+      lCertNamePromise,
+      lCertSymbolPromise,
+    ]);
 
     return {
       certName: lCertName as string,
       certSymbol: lCertSymbol as string,
-      certAddress: certAddress
+      certAddress: certAddress,
     };
-  }
+  };
 
   const handleToggle = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -272,40 +292,34 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
   }, [props.org]);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        height: "100%",
-      }}
-    >
+    <div>
       {lCerts.map((lCert, index) => (
-        <StyledCard key={index}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              minWidth: "100%",
-            }}
-          >
-            <Typography variant="h6">Certificate Name: {lCert.certName}</Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleToggle(index)}
+        <div className="w-full">
+          <div className="w-1/2 bg-[#24303F] my-2 py-3 rounded-lg px-5 justify-between">
+            <div className=" flex my-2 py- rounded-lg px-5 justify-between">
+              <p className="my-auto text-2xl font-semibold">
+                {" "}
+                Certificate Name:{" "}
+                <span className="text-[#b2b1b1]">{lCert.certName}</span>
+              </p>
+              <button
+                className="bg-[#3d51e0] py-2 px-4 rounded text-lg"
+                color="primary"
+                onClick={() => handleToggle(index)}
+              >
+                Issue a LCert
+              </button>
+            </div>
+            <Collapse
+              in={expandedIndex === index}
+              timeout="auto"
+              unmountOnExit
+              sx={{ width: "100%" }}
             >
-              {expandedIndex === index ? 'Close Form' : 'Issue a LCert'}
-            </Button>
-            <Collapse in={expandedIndex === index} timeout="auto" unmountOnExit sx={{ width: '100%' }}>
-              <CertificateForm 
-                index={index} 
+              <CertificateForm
+                index={index}
                 certData={lCert}
-                certName={lCert.certName} 
+                certName={lCert.certName}
                 certificateSrc={certificateSrc}
                 orgName={props.org?.orgName}
                 orgData={props.org}
@@ -315,9 +329,44 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
                 onClose={() => setOpen(false)}
               />
             </Collapse>
-          </Box>
-        </StyledCard>
+          </div>
+        </div>
+
+        // <StyledCard key={index}>
+        //   <Box
+        //     sx={{
+        //       display: "flex",
+        //       flexDirection: "column",
+        //       alignItems: "center",
+        //       justifyContent: "center",
+        //       minWidth: "100%",
+        //     }}
+        //   >
+        //     <Typography variant="h6">Certificate Name: {lCert.certName}</Typography>
+        //     <Button
+        //       variant="contained"
+        //       color="primary"
+        //       onClick={() => handleToggle(index)}
+        //     >
+        //       {expandedIndex === index ? 'Close Form' : 'Issue a LCert'}
+        //     </Button>
+        //     <Collapse in={expandedIndex === index} timeout="auto" unmountOnExit sx={{ width: '100%' }}>
+        //       <CertificateForm
+        //         index={index}
+        //         certData={lCert}
+        //         certName={lCert.certName}
+        //         certificateSrc={certificateSrc}
+        //         orgName={props.org?.orgName}
+        //         orgData={props.org}
+        //         mintCert={MintCertificate}
+        //         createCanvas={handleCreateCanvas}
+        //         open={open}
+        //         onClose={() => setOpen(false)}
+        //       />
+        //     </Collapse>
+        //   </Box>
+        // </StyledCard>
       ))}
-    </Box>
+    </div>
   );
 }

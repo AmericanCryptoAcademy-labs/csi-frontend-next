@@ -1,18 +1,27 @@
-import React from 'react';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { Box, Input, Select, Button, FormControl, InputLabel, MenuItem } from '@mui/material';
-import PreviewAndIssueModal from '../modal/PreviewAndIssue';
-import certbg1 from '../../../../../public/images/certBackrounds/1.png'
-import certbg2 from '../../../../../public/images/certBackrounds/2.png'
-import certbg3 from '../../../../../public/images/certBackrounds/3.png'
-import certbg4 from '../../../../../public/images/certBackrounds/4.png'
-import certbg5 from '../../../../../public/images/certBackrounds/5.png'
-import certbg6 from '../../../../../public/images/certBackrounds/6.png'
-import certbg7 from '../../../../../public/images/certBackrounds/7.png'
-import certbg8 from '../../../../../public/images/certBackrounds/8.png'
-import certbg9 from '../../../../../public/images/certBackrounds/9.png'
-import certbg10 from '../../../../../public/images/certBackrounds/10.png'
+import React, { useState } from "react";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import {
+  Box,
+  Input,
+  Select,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+} from "@mui/material";
+import PreviewAndIssueModal from "../modal/PreviewAndIssue";
+import certbg1 from "../../../../../public/images/certBackrounds/1.png";
+import certbg2 from "../../../../../public/images/certBackrounds/2.png";
+import certbg3 from "../../../../../public/images/certBackrounds/3.png";
+import certbg4 from "../../../../../public/images/certBackrounds/4.png";
+import certbg5 from "../../../../../public/images/certBackrounds/5.png";
+import certbg6 from "../../../../../public/images/certBackrounds/6.png";
+import certbg7 from "../../../../../public/images/certBackrounds/7.png";
+import certbg8 from "../../../../../public/images/certBackrounds/8.png";
+import certbg9 from "../../../../../public/images/certBackrounds/9.png";
+import certbg10 from "../../../../../public/images/certBackrounds/10.png";
+import SelectBgDialog from "./SelectBgDialog.component";
 
 const Backgrounds = [
   certbg1,
@@ -24,12 +33,24 @@ const Backgrounds = [
   certbg7,
   certbg8,
   certbg9,
-  certbg10
-]
+  certbg10,
+];
 
-
-function CertificateForm({ index, certData, certName, certificateSrc, orgName, mintCert, createCanvas, open, onClose }: any) {
-  const [selectedBackground, setSelectedBackground] = React.useState(Backgrounds[0]);
+function CertificateForm({
+  index,
+  certData,
+  certName,
+  certificateSrc,
+  orgName,
+  mintCert,
+  createCanvas,
+  open,
+  onClose,
+}: any) {
+  const [selectedBackground, setSelectedBackground] = React.useState(
+    Backgrounds[0]
+  );
+  const [certBg, setCertBg] = useState<string>("");
   console.log(selectedBackground);
 
   const issueLCertForm = useFormik({
@@ -43,7 +64,7 @@ function CertificateForm({ index, certData, certName, certificateSrc, orgName, m
       description: "",
       dateIssued: new Date().toISOString(),
       expInDays: "",
-      selectedBackground: selectedBackground
+      certBg: certBg,
     },
     validationSchema: yup.object({
       firstName: yup.string().required("Required"),
@@ -56,144 +77,117 @@ function CertificateForm({ index, certData, certName, certificateSrc, orgName, m
       expInDays: yup.string().required("Required"),
     }),
     onSubmit: async (values) => {
-      setSelectedBackground(values.selectedBackground);
-      
+      values.certBg=certBg
       createCanvas(values);
-    }
+    },
   });
 
   return (
     <form onSubmit={issueLCertForm.handleSubmit}>
-      {
-        open && <PreviewAndIssueModal
+      {open && (
+        <PreviewAndIssueModal
           open={open}
           onClose={() => onClose()}
           imgSrc={certificateSrc}
           mintCertificate={() => mintCert(issueLCertForm.values)}
         />
-      }
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "2rem",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            direction: "row",
-            gap: "2rem",
+      )}
 
-          }}
-        >
-          {/* First Name */}
-          <FormControl>
-            <InputLabel htmlFor={`firstName-${index}`}>
+      <div className="flex flex-col gap-2 mt-2 pt-4 border-[#d3d3d3] border-t">
+        <div className="flex gap-4 justify-between">
+          <div className="w-full ">
+            <label className="mb-2.5 block text-black dark:text-white">
               First Name
-            </InputLabel>
-            <Input
+            </label>
+            <input
               id={`firstName-${index}`}
               type="text"
-              sx={{ width: "100%" }}
               {...issueLCertForm.getFieldProps("firstName")}
+              placeholder="Enter organization name"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
             />
-          </FormControl>
+          </div>
 
-          {/* Last Name */}
-          <FormControl>
-            <InputLabel htmlFor={`lastName-${index}`}>
+          <div className="w-full ">
+            <label className="mb-2.5 block text-black dark:text-white">
               Last Name
-            </InputLabel>
-            <Input
+            </label>
+            <input
               id={`lastName-${index}`}
               type="text"
               {...issueLCertForm.getFieldProps("lastName")}
+              placeholder="Enter organization name"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
             />
-          </FormControl>
-        </Box>
+          </div>
+        </div>
 
-        {/* Remarks */}
-        <FormControl>
-          <InputLabel htmlFor={`remarks-${index}`}>
+        <div className="w-full ">
+          <label className="mb-2.5 block text-black dark:text-white">
             Remarks
-          </InputLabel>
-          <Input
+          </label>
+          <input
             id={`remarks-${index}`}
             type="text"
             {...issueLCertForm.getFieldProps("remarks")}
+            placeholder="Enter organization name"
+            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
           />
-        </FormControl>
+        </div>
 
-        {/* Issued To */}
-        <FormControl>
-          <InputLabel htmlFor={`issuedTo-${index}`}>
+        {/* issued to will comes here i am redesigning below code and use above designs or code snippits  */}
+        <div className="w-full ">
+          <label className="mb-2.5 block text-black dark:text-white">
             Issued To
-          </InputLabel>
-          <Input
+          </label>
+          <input
             id={`issuedTo-${index}`}
             type="text"
             {...issueLCertForm.getFieldProps("issuedTo")}
+            placeholder="Enter organization name"
+            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
           />
-        </FormControl>
-          
-        {/* Description */} 
-        <FormControl>
-          <InputLabel htmlFor={`description-${index}`}>
+        </div>
+
+        <div className="w-full ">
+          <label className="mb-2.5 block text-black dark:text-white">
             Description
-          </InputLabel>
-          <Input
+          </label>
+          <input
             id={`description-${index}`}
             type="text"
             {...issueLCertForm.getFieldProps("description")}
+            placeholder="Enter organization name"
+            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
           />
-        </FormControl>
-        
-        <Box
-          sx={{
-            display: "flex",
-            direction: "row",
-            gap: "2rem",
-          }}
-        >
-          {/* Expiry in Days */}
-          <FormControl fullWidth>
-            <InputLabel htmlFor={`expInDays`}>
+        </div>
+
+        <div className="flex gap-5 justify-between">
+          <div className="w-1/3 ">
+            <label className="mb-2.5 block text-black dark:text-white">
               Expiry in Days
-            </InputLabel>
-            <Input
+            </label>
+            <input
               id={`expInDays`}
               type="number"
-              sx={{ width: "150px" }}
               {...issueLCertForm.getFieldProps("expInDays")}
+              placeholder="0 Days"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
             />
-          </FormControl>
+          </div>
 
-          {/* Background */}
-          <FormControl fullWidth>
-            <InputLabel htmlFor={`selectedBackground-${index}`}>
-              Background
-            </InputLabel>
-            
-            <Select
-              id={`selectedBackground-${index}`}
-              value={selectedBackground}
-              onChange={(e: any) => setSelectedBackground(e.target.value)}
-            >
-              {
-                Backgrounds.map((bg, index) => (
-                  <MenuItem key={index} value={bg}>
-                    <img src={bg?.src} alt="Background" width="50" height="50" />
-                  </MenuItem>
-                ))
-              }
-            </Select>
-          </FormControl>  
-        </Box>
+          <div className="w-2/3 ">
+            <label className="mb-2.5 block text-black dark:text-white">
+            Choose Background
+            </label>
+            <SelectBgDialog setCertBg={setCertBg} />
+          </div>
+        </div>
 
-      {/* Additional fields can be added here similarly */}
-      <Button type="submit">Submit</Button>
-      </Box>
+
+        {/* Additional fields can be added here similarly */}
+        <button className="bg-[#3d50e1] py-2.5 text-white rounded w-full " type="submit">Submit</button>
+      </div>
     </form>
   );
 }

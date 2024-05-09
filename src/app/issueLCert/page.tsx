@@ -11,7 +11,7 @@ enum EIssueCerts {
 
 export default function IssueCerts() {
   const [issueCertsState, setIssueCertsState] = useState<EIssueCerts>(EIssueCerts.CHOOSE_ORG);
-  const [chosenOrg, setChosenOrg] = useState<TOrg>();
+  const [chosenOrg, setChosenOrg] = useState<TOrg>({orgName: "", orgDeployer: "0x", orgAddress: "0x"});
 
   const handleClickChoseOrg = (org: TOrg) => {
     setChosenOrg(org);
@@ -19,27 +19,17 @@ export default function IssueCerts() {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        height: "100%",
-        backgroundColor: "background.paper",
-      }}
-    >
+    <div className="w-full bg-[#1b222d] p-4 h-full">
       {issueCertsState === EIssueCerts.CHOOSE_ORG && (
         <ExistingOrgsSection setEnumState={handleClickChoseOrg} />  
       )}
 
       {issueCertsState === EIssueCerts.CHOOSE_LCERT && (
         <Box>
-          <ExistingLCertsSection org={chosenOrg} />
+          <ExistingLCertsSection  org={chosenOrg}/>
         </Box>
       )}
 
-    </Box>
+    </div>
   );
 }
