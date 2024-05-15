@@ -97,7 +97,7 @@ function CertificateForm({
       <div className="flex flex-col gap-2 mt-2 pt-4 border-[#d3d3d3] border-t">
         <div className="flex gap-4 justify-between">
           <div className="w-full ">
-            <label className="mb-2.5 block text-black dark:text-white">
+            <label className="mb-2.5 block text-white">
               First Name
             </label>
             <input
@@ -110,7 +110,7 @@ function CertificateForm({
           </div>
 
           <div className="w-full ">
-            <label className="mb-2.5 block text-black dark:text-white">
+            <label className="mb-2.5 block text-white">
               Last Name
             </label>
             <input
@@ -124,7 +124,7 @@ function CertificateForm({
         </div>
 
         <div className="w-full ">
-          <label className="mb-2.5 block text-black dark:text-white">
+          <label className="mb-2.5 block text-white">
             Remarks
           </label>
           <input
@@ -138,7 +138,7 @@ function CertificateForm({
 
         {/* issued to will comes here i am redesigning below code and use above designs or code snippits  */}
         <div className="w-full ">
-          <label className="mb-2.5 block text-black dark:text-white">
+          <label className="mb-2.5 block text-white">
             Issued To
           </label>
           <input
@@ -151,7 +151,7 @@ function CertificateForm({
         </div>
 
         <div className="w-full ">
-          <label className="mb-2.5 block text-black dark:text-white">
+          <label className="mb-2.5 block text-white">
             Description
           </label>
           <input
@@ -165,7 +165,7 @@ function CertificateForm({
 
         <div className="flex gap-5 justify-between">
           <div className="w-1/3 ">
-            <label className="mb-2.5 block text-black dark:text-white">
+            <label className="mb-2.5 block text-white">
               Expiry in Days
             </label>
             <input
@@ -178,7 +178,7 @@ function CertificateForm({
           </div>
 
           <div className="w-2/3 ">
-            <label className="mb-2.5 block text-black dark:text-white">
+            <label className="mb-2.5 block text-white">
               Choose Background
             </label>
             <SelectBgDialog setCertBg={setCertBg} />

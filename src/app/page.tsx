@@ -10,6 +10,8 @@ import Refactored from "@/components/Sections/ExistingOrgs/Refactored";
 export default function Home() {
   const [appState, setAppState] = useAtom(appAtom);
   const theme = useTheme();
+
+  
   
   return (
 

@@ -111,13 +111,13 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
           back
         </Icon> */}
           {/* Contract Org Info */}
-          <div className="p-6  ">
+          <div className="px-6 py-2  ">
             <form
               onSubmit={createLCertForm.handleSubmit}
               className="flex flex-col gap-4 w-full"
             >
               <div className="w-full ">
-                <label className="mb-2.5 block text-black dark:text-white">
+                <label className="mb-2.5 block text-white">
                   Name
                 </label>
                 <input
@@ -132,7 +132,7 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
               </div>
 
               <div className="w-full ">
-                <label className="mb-2.5 block text-black dark:text-white">
+                <label className="mb-2.5 block text-white">
                   Symbol
                 </label>
                 <input
@@ -147,7 +147,7 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
               </div>
 
               <div className="w-full ">
-                <label className="mb-2.5 block text-black dark:text-white">
+                <label className="mb-2.5 block text-white">
                   Max Supply
                 </label>
                 <input
@@ -162,7 +162,7 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
               </div>
 
               <div className="w-full ">
-                <label className="mb-2.5 block text-black dark:text-white">
+                <label className="mb-2.5 block text-white">
                   Issuers For Certificate
                 </label>
                 <input
@@ -178,7 +178,7 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
 
               <div className="flex">
                 <div className="w-full flex gap-2">
-                  <label className="my-auto pb-1  block text-black dark:text-white">
+                  <label className="my-auto pb-1  block text-white">
                     Transferable
                   </label>
                   <input
@@ -192,7 +192,7 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
                 </div>
 
                 <div className="w-full flex gap-2">
-                  <label className=" my-auto pb-1 block text-black dark:text-white">
+                  <label className=" my-auto pb-1 block text-white">
                     Revocable
                   </label>
                   <input

@@ -21,7 +21,7 @@ export default function CreateLcert() {
   };
 
   return (
-    <div className="w-full bg-[#1b222d] p-4 h-full">
+    <div className="w-full bg-[#1b222d] p-4 h-full text-white">
       <p className="font-semibold text-2xl ">Create License Certificate</p>
       {createLcertState === ECreateLcert.CHOOSE_ORG && (
         <Box>
