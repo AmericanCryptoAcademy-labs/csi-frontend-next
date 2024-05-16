@@ -136,7 +136,7 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
 
   const MintCertificate = async (values: any) => {
     values.certName = lCerts[expandedIndex as number].certName;
-    const tokenURI = `ipfs://${url}`;
+    const tokenURI = `${url}`;
 
     mintCertificate({
       abi: Contracts.Cert.abi,

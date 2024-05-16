@@ -5,7 +5,7 @@ import { CreateOrgSection, ApplySection, ExistingOrgsSection } from "@/component
 import { Address } from "viem";
 import { appAtom } from "@/store/AppStore";
 import { useAtom } from "jotai";
-import Refactored from "@/components/Sections/ExistingOrgs/Refactored";
+import OrganizationList from "@/components/Sections/ExistingOrgs/OrganizationList";
 
 export default function Home() {
   const [appState, setAppState] = useAtom(appAtom);
@@ -28,7 +28,7 @@ export default function Home() {
         {appState.canCreateOrg ? (
           <div className="flex w-full">
             <CreateOrgSection />
-            <Refactored />
+            <OrganizationList />
             {/* <ExistingOrgsSection /> */}
           </div>
           

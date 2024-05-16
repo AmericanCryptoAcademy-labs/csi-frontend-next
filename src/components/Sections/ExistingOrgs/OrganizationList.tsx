@@ -1,13 +1,10 @@
 "use client";
 import React from "react";
-import { Box, Button, Icon, Typography } from "@mui/material";
 import { appAtom } from "@/store/AppStore";
 import { useAtom } from "jotai";
-import { Address } from "viem";
-import { StyledCard } from "@/components/Cards/Cards";
 import { TExistingOrgProps, TOrg } from "@/types";
 
-export default function Refactored(props: TExistingOrgProps) {
+export default function OrganizationList(props: TExistingOrgProps) {
   const [appState, setAppState] = useAtom(appAtom);
   console.log(appState);
 
