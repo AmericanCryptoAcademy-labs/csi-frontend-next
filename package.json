@@ -1,0 +1,40 @@
+{
+  "name": "csi-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@mui/material": "^5.15.15",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@supabase/supabase-js": "^2.43.1",
+    "@tanstack/react-query": "^5.32.0",
+    "@types/axios": "^0.14.0",
+    "@web3modal/wagmi": "^4.1.11",
+    "autoprefixer": "^10.4.19",
+    "formik": "^2.4.6",
+    "jotai": "^2.8.0",
+    "next": "14.2.3",
+    "nft.storage": "^7.1.1",
+    "react": "^18",
+    "react-dom": "^18",
+    "styled-components": "^6.1.8",
+    "tailwindcss": "^3.4.3",
+    "viem": "^2.9.26",
+    "wagmi": "^2.5.20",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "@iconify/react": "^4.1.1",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3",
+    "typescript": "^5"
+  }
+}
