@@ -63,7 +63,7 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
         revocable: values.revocable,
         creator: address as Address,
         issuersForCertificate: values.issuersForCertificate
-          .split(",")
+          .split(", ")
           .map((address: string) => address.trim()),
       };
 

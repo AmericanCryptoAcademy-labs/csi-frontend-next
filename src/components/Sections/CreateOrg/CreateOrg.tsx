@@ -52,8 +52,8 @@ export default function CreateOrgSection() {
 
       const args: TCreateOrgParams = {
         orgName: values.orgName,
-        orgAdmins: values.orgAdmins.split(","),
-        orgIssuers: values.orgIssuers.split(","),
+        orgAdmins: values.orgAdmins.split(", "),
+        orgIssuers: values.orgIssuers.split(", "),
       };
       const value = BigInt(10000000000000000);
       try {
@@ -131,6 +131,7 @@ export default function CreateOrgSection() {
             </div>
 
             <button
+              type="submit"
               className={`mb-7 mt-2 flex w-full justify-center rounded bg-[#3d51e0] p-2.5 font-medium text-gray text-xl }`}
             >
               Create Organization
