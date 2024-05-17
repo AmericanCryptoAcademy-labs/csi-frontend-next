@@ -40,7 +40,7 @@ const Page: React.FC = () => {
       <p className="font-semibold text-2xl mb-10 ">Create License Certificate</p>
       <div className="grid grid-cols-3 gap-4">
         {ipnftTokens.map((cert, index) => (
-          <div className="">
+          <div key={index} className="">
             <img
               key={index} 
               src={`https://nftstorage.link/ipfs/${cert.image}/image.jpeg`}
