@@ -86,7 +86,7 @@ export default function CreateOrgSection() {
             className="flex flex-col gap-4 w-full"
           >
             <div className="w-full ">
-              <label className="mb-2.5 block text-black dark:text-white">
+              <label className="mb-2.5 block text-white">
                 Organization name
               </label>
               <input
@@ -101,7 +101,7 @@ export default function CreateOrgSection() {
             </div>
 
             <div className="w-full ">
-              <label className="mb-2.5 block text-black dark:text-white">
+              <label className="mb-2.5 block text-white">
                 Admins
               </label>
               <input
@@ -116,7 +116,7 @@ export default function CreateOrgSection() {
             </div>
 
             <div className="w-full ">
-              <label className="mb-2.5 block text-black dark:text-white">
+              <label className="mb-2.5 block text-white">
                 Issuers
               </label>
               <input

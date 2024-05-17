@@ -26,7 +26,7 @@ export default function IssueCerts() {
 
 
   return (
-    <div className="w-full bg-[#1b222d] p-4 h-full">
+    <div className="w-full bg-[#1b222d] p-4 h-full text-white">
       {issueCertsState === EIssueCerts.CHOOSE_ORG && (
         <ExistingOrgsSection setEnumState={handleClickChoseOrg} />
       )}
