@@ -36,8 +36,8 @@ const Page: React.FC = () => {
   }, [certificates]);
 
   return (
-    <div className="bg-[#1b222d] h-full p-10">
-      <p className="font-semibold text-2xl mb-10 ">Create License Certificate</p>
+    <div className="bg-[#1b222d] h-full p-10 pt-5">
+      <p className="font-semibold text-2xl mb-5 text-white">My Certificates</p>
       <div className="grid grid-cols-3 gap-4">
         {ipnftTokens.map((cert, index) => (
           <div className="">
