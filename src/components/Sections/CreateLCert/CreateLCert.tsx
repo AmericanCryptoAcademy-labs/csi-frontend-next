@@ -117,9 +117,7 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
               className="flex flex-col gap-4 w-full"
             >
               <div className="w-full ">
-                <label className="mb-2.5 block text-white">
-                  Name
-                </label>
+                <label className="mb-2.5 block text-white">Name</label>
                 <input
                   id="name"
                   name="name"
@@ -127,14 +125,12 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
                   onChange={createLCertForm.handleChange}
                   value={createLCertForm.values.name}
                   placeholder="Enter Certificate Name"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  className="w-full rounded-md border-[2px] border-[#3d4d60] bg-transparent py-3 px-5 font-medium text-white outline-none transition focus:border-[#3d51e0]"
                 />
               </div>
 
               <div className="w-full ">
-                <label className="mb-2.5 block text-white">
-                  Symbol
-                </label>
+                <label className="mb-2.5 block text-white">Symbol</label>
                 <input
                   id="symbol"
                   name="symbol"
@@ -142,14 +138,12 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
                   onChange={createLCertForm.handleChange}
                   value={createLCertForm.values.symbol}
                   placeholder="Enter Certificate Symbol"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  className="w-full rounded-md border-[2px] border-[#3d4d60] bg-transparent py-3 px-5 font-medium text-white outline-none transition focus:border-[#3d51e0]"
                 />
               </div>
 
               <div className="w-full ">
-                <label className="mb-2.5 block text-white">
-                  Max Supply
-                </label>
+                <label className="mb-2.5 block text-white">Max Supply</label>
                 <input
                   id="maxSupply"
                   name="maxSupply"
@@ -157,7 +151,7 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
                   onChange={createLCertForm.handleChange}
                   value={createLCertForm.values.maxSupply}
                   placeholder="Enter Certificate Max Supply"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  className="w-full rounded-md border-[2px] border-[#3d4d60] bg-transparent py-3 px-5 font-medium text-white outline-none transition focus:border-[#3d51e0]"
                 />
               </div>
 
@@ -172,7 +166,7 @@ export default function CreateLCertSection(props: TCreateLCertProps) {
                   onChange={createLCertForm.handleChange}
                   value={createLCertForm.values.issuersForCertificate}
                   placeholder="Enter Issuers For Certificate"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  className="w-full rounded-md border-[2px] border-[#3d4d60] bg-transparent py-3 px-5 font-medium text-white outline-none transition focus:border-[#3d51e0]"
                 />
               </div>
 

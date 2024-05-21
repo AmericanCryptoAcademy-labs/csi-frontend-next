@@ -96,14 +96,12 @@ export default function CreateOrgSection() {
                 onChange={createOrgForm.handleChange}
                 value={createOrgForm.values.orgName}
                 placeholder="Enter organization name"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                className="w-full rounded-md border-[2px] border-[#3d4d60] bg-transparent py-3 px-5 font-medium text-white outline-none transition focus:border-[#3d51e0]"
               />
             </div>
 
             <div className="w-full ">
-              <label className="mb-2.5 block text-white">
-                Admins
-              </label>
+              <label className="mb-2.5 block text-white">Admins</label>
               <input
                 id="orgAdmins"
                 name="orgAdmins"
@@ -111,14 +109,12 @@ export default function CreateOrgSection() {
                 onChange={createOrgForm.handleChange}
                 value={createOrgForm.values.orgAdmins}
                 placeholder="Enter admins by saperating with comma"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                className="w-full rounded-md border-[2px] border-[#3d4d60] bg-transparent py-3 px-5 font-medium text-white outline-none transition focus:border-[#3d51e0]"
               />
             </div>
 
             <div className="w-full ">
-              <label className="mb-2.5 block text-white">
-                Issuers
-              </label>
+              <label className="mb-2.5 block text-white">Issuers</label>
               <input
                 id="orgIssuers"
                 name="orgIssuers"
@@ -126,13 +122,13 @@ export default function CreateOrgSection() {
                 onChange={createOrgForm.handleChange}
                 value={createOrgForm.values.orgIssuers}
                 placeholder="Enter issuers by saperating with comma"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                className="w-full rounded-md border-[2px] border-[#3d4d60] bg-transparent py-3 px-5 font-medium text-white outline-none transition focus:border-[#3d51e0]"
               />
             </div>
 
             <button
               type="submit"
-              className={`mb-7 mt-2 flex w-full justify-center rounded bg-[#3d51e0] p-2.5 font-medium text-gray text-xl }`}
+              className={`mb-7 mt-2 flex w-full justify-center rounded bg-[#3d51e0] p-2.5 font-medium text-white text-xl }`}
             >
               Create Organization
             </button>
