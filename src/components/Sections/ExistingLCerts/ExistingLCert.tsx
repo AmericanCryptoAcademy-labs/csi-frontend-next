@@ -55,58 +55,6 @@ const Backgrounds = [
   certbg10,
 ];
 
-/*
-TODO: 
-  1. Fix The ui make it nice Obvs i rushed it
-  2. Add the ability to choose background images for the certificate
-  3. Add Loading states to buttons so user cant multi click
-  4. YOU ABOSLUTELY NEED TO ADD THE IPFS LINK TO THE CERTIFICATE METADATA and then the TOKENURI is the META DATA LINK that is uploaded to IPFS
-  YOU CAN NOT HAVE THE IMAGE DIRECTLY AS THE TOKENURI IF YOU WANT THE CERT TO BE VIEWABLE ON OPENSEA OR ANY OTHER NFT MARKETPLACE
-  PLEASE REFER TO METADATA STANDARDS FOR NFTS = https://docs.opensea.io/docs/metadata-standards
-  TOKEN URI SHOULD BE SOMETHING LIKE
-  {
-    "name": "Certificate",
-    "description": "This is a certificate",
-    "image": "ipfs://ipfs.io/ipfs/QmZK2Xc1b7vXjZv5R6q4T5t6X.../image.jpeg",
-    attributes: [
-      {
-        "trait_type": "Student Name",
-        "value": "John Doe"
-      },
-      {
-        "trait_type": "Certificate Name",
-        "value": "Certificate of Completion"
-      },
-      {
-        "trait_type": "Duration",
-        "value": "30"
-      },
-      {
-        "trait_type": "Organization",
-        "value": "XYZ Institute"
-      }
-    ]
-  }
-
-PLEASE NOTE: YOU MUST ACTUALLY ADD THE IMAGE PATH TO THE METADATA BEFORE UPLOADING TO IPFS AND IT SHOULD HAVE THE IPFS PREFIX and FILE EXTENSION
-
-WRONG:
-  "image": "QmZK2Xc1b7vXjZv5R6q4T5t6X.../image.jpeg",
-  OR
-  "image": "ipfs://QmZK2Xc1b7vXjZv5R6q4T5t6X...",
-RIGHT:
-  image: "ipfs://ipfs.io/ipfs/QmZK2Xc1b7vXjZv5R6q4T5t6X.../image.jpeg",
-  OR
-  image: "ipfs://QmZK2Xc1b7vXjZv5R6q4T5t6X.../image.jpeg",
-
-
-  STEPS TO ACCOMPLISH THIS:
-  1. Create and upload the image function 
-  2. once image create metadata and use metadata ipfs link as tokenuri
-  3. mint the certificate with the tokenuri as the metadata link
-
-*/
-
 export default function ExistingOrgsSection(props: TExistingLCertProps) {
   const [appState, setAppState] = useAtom(appAtom);
   const [open, setOpen] = useState(false);
@@ -118,25 +66,27 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
   const [certificateSrc, setCertificateSrc] = useState<string | null>("");
   const config = useConfig();
   const instituteRef = useRef(null);
-  const [url, seturl] = useState<string>("");
+  const [url, setUrl] = useState<string>("");
   const [tokenURI, setTokenURI] = useState<string>("");
   const [issuedTo, setIssuedTo] = useState<Address>('0x');
   const {
     writeContract: mintCertificate,
     error: mintCertificateError,
     isSuccess: mintCertificateSuccess,
-    status:mintstatus
+    status: mintstatus
   } = useWriteContract();
 
-  useEffect(()=>{
-    if(mintstatus==="success"){
+  useEffect(() => {
+    if (mintstatus === "success") {
       saveIpfsTokenAtSupabase(tokenURI, issuedTo);
     }
-  },[mintstatus])
+  }, [mintstatus]);
 
   const MintCertificate = async (values: any) => {
     values.certName = lCerts[expandedIndex as number].certName;
     const tokenURI = `${url}`;
+    console.log("Token URI", tokenURI);
+    console.log("Values", values);
 
     mintCertificate({
       abi: Contracts.Cert.abi,
@@ -147,7 +97,7 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
 
     setTokenURI(tokenURI);
     setIssuedTo(values.issuedTo);
-    
+
     console.log(mintCertificateError, "mintCertificateError");
     console.log(mintCertificateSuccess, "mintCertificateSuccess");
   };
@@ -156,36 +106,31 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
     ipfsToken: string,
     issueuser: string
   ) => {
-    
     const { data, error } = await supabase
       .from("Lcerts")
       .select()
       .eq("wallet_address", issueuser);
-      // let existingTokens= data[0]?.ipfs_token;
-    if (data?.length === 0) {
-      //need to insert some data along with address which will newly add
 
+    if (data?.length === 0) {
       const { error } = await supabase
         .from("Lcerts")
         .insert({ wallet_address: issueuser, ipfs_token: [ipfsToken] });
       console.log(data, error, "data and error2");
     } else {
-      // need to update the data
-      let existingCerts = data?.[0]?.ipfs_token
-      existingCerts.push(ipfsToken)
+      let existingCerts = data?.[0]?.ipfs_token;
+      existingCerts.push(ipfsToken);
       console.log(existingCerts, "existingCerts");
-      
+
       const { error } = await supabase
         .from("Lcerts")
-        .update({ ipfs_token: existingCerts})
+        .update({ ipfs_token: existingCerts })
         .eq("wallet_address", issueuser);
-        console.log(error, "error");
+      console.log(error, "error");
     }
     console.log(data, error, "data and error");
   };
 
   const handleCreateCanvas = async (event: React.FormEvent) => {
-    // event.preventDefault();
     await createCanvas(event).then(() => {
       setOpen(true);
     });
@@ -200,11 +145,11 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
         Organization: values.orgName,
         StudentName: values.firstName + " " + values.lastName,
         CertificateName: lCerts[expandedIndex as number].certName,
-        Duration: values.expInDays, // Assuming validity is a string that needs to be parsed as an integer
+        Duration: values.expInDays,
         certBg: values.certBg,
       };
       const imageSrc = await createCertificate(certData);
-      return imageSrc; // Directly return the generated src
+      return imageSrc;
     } catch (error) {
       console.log("Error generating certificate", error);
       console.error(error);
@@ -213,60 +158,87 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
   };
 
   const createCanvas = async (values: any) => {
-    // event.preventDefault();
-    const files = await generateCertificate(values); // This will return the image src
+    const files = await generateCertificate(values);
     console.log("Files", files);
     setCertificateSrc(files);
 
     try {
-      const blobfile = files && dataURLtoBlob(files); // This will convert the image src to a blob file
+      const blobfile = files && dataURLtoBlob(files);
       if (blobfile) {
-        const ipnft = await uploadImage(blobfile, values); // This will upload the image to IPFS and return the IPFS link
+        const ipnft = await uploadImage(blobfile, values);
+        return ipnft;
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   const uploadImage = async (imageData: Blob, values: any): Promise<string> => {
-    // setloading(true)
     const nftstorage = new NFTStorage({
       token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDAzM2Y5Mzc1ZEQ5ODY1YzhmN2FiODVENGRiRTM3NDhERWI4NTljRkYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4NTc3MTE1MDk5NiwibmFtZSI6IlBBUkszIn0.eHLoAl-RBIxAqXmHm_KTQ553Ha-_18sZrnoxuXpGxMI`,
     });
 
-    // Check if instituteRef.current is not null
     const instituteValue: string = values.orgName;
 
-    // Send request to store image
-    const { ipnft } = await nftstorage.store({
-      image: new File([imageData], "image.jpeg", { type: "image/jpeg" }),
-      name: values.firstName,
-      lastname: values.lastName,
-      certName: values.certName,
-      remarks: values.remarks,
-      validity: values.expInDays,
-      issuedTo: values.issuedTo,
-      issuerName: instituteValue,
-      description: `
-              ${values.firstName} +' ' +
-              ${values.lastName} +' ' + 
-              ${values.certName} +' ' + 
-              ${values.remarks} +' ' + 
-              ${values.expInDays} +' ' + 
-              ${values.issuedTo} +' ' + 
-              ${instituteValue} +' ' + 
-              ${values.description} +' ' + 
-              ${values.selectedBackground}`,
-    }); // This will store the image and return the IPFS link
+    // Upload the image to IPFS and get the image URL
+    const imageFile = new File([imageData], "image.jpeg", { type: "image/jpeg" });
+    const imageCID = await nftstorage.storeBlob(imageFile);
+    const imageUrl = `https://ipfs.io/ipfs/${imageCID}`;
+    const nextTokenId = await fetchNextTokenId(lCerts[expandedIndex as number].certAddress);
 
-    // Save the URL
-    // const NFturl = `https://ipfs.io/ipfs/${ipnft}/metadata.json`
-    seturl(ipnft);
-    // Set showUploadAlert to true after uploadImage function is completed
-    return ipnft;
+    const metadata = {
+      name: `${values.certName} #${nextTokenId}`, 
+      description: `Certificate issued to ${values.firstName} ${values.lastName} by ${instituteValue}, for achieving ${values.certName}.`,
+      image: imageUrl,
+      attributes: [
+        {
+          trait_type: "Student Name",
+          value: `${values.firstName} ${values.lastName}`
+        },
+        {
+          trait_type: "Certificate Name",
+          value: `${values.certName}`
+        },
+        {
+          trait_type: "Remarks",
+          value: `${values.remarks}`
+        },
+        {
+          trait_type: "Issued By",
+          value: `${instituteValue}`
+        },
+        {
+          trait_type: "Issued To",
+          value: `${values.issuedTo}`
+        },
+        {
+          display_type: "date",
+          trait_type: "Valid for",
+          value: new Date(Date.now() + values.expInDays * 24 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          display_type: "date",
+          trait_type: "Issue Date",
+          value: new Date().toISOString()
+        },
+        {
+          trait_type: "Description",
+          value: `${values.description}`
+        },
+      ]
+    };
+
+    const metadataFile = new File([JSON.stringify(metadata)], "metadata.json", {
+      type: "application/json"
+    });
+
+    const metadataCID = await nftstorage.storeBlob(metadataFile);
+    const metadataUrl = `https://ipfs.io/ipfs/${metadataCID}/`
+    setUrl(metadataUrl);
+
+    return metadataUrl;
   };
 
-  // IF YOU NEED TO FETCH THE NEXT TOKEN ID USE THIS DONT HARD CODE IT
   const fetchNextTokenId = async (address: Address) => {
     const nextTokenId = await readContract(config, {
       abi: Contracts.Cert.abi,
@@ -294,6 +266,7 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
       fetchLCertData(certAddress)
     );
     const lcertData = await Promise.all(promises);
+    console.log("LCert Data", lcertData)
     setLCerts(lcertData);
   };
 
@@ -334,9 +307,11 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
     }
   }, [props.org]);
 
+  console.log("LCerts", lCerts);
+
   return (
     <div>
-      {lCerts.map((lCert, index) => (
+      {lCerts.length > 0 ? lCerts.map((lCert, index) => (
         <div key={index} className="w-full">
           <div className="w-1/2 bg-[#24303F] my-2 py-3 rounded-lg px-5 justify-between">
             <div className=" flex my-2 py- rounded-lg px-5 justify-between">
@@ -374,42 +349,15 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
             </Collapse>
           </div>
         </div>
-
-        // <StyledCard key={index}>
-        //   <Box
-        //     sx={{
-        //       display: "flex",
-        //       flexDirection: "column",
-        //       alignItems: "center",
-        //       justifyContent: "center",
-        //       minWidth: "100%",
-        //     }}
-        //   >
-        //     <Typography variant="h6">Certificate Name: {lCert.certName}</Typography>
-        //     <Button
-        //       variant="contained"
-        //       color="primary"
-        //       onClick={() => handleToggle(index)}
-        //     >
-        //       {expandedIndex === index ? 'Close Form' : 'Issue a LCert'}
-        //     </Button>
-        //     <Collapse in={expandedIndex === index} timeout="auto" unmountOnExit sx={{ width: '100%' }}>
-        //       <CertificateForm
-        //         index={index}
-        //         certData={lCert}
-        //         certName={lCert.certName}
-        //         certificateSrc={certificateSrc}
-        //         orgName={props.org?.orgName}
-        //         orgData={props.org}
-        //         mintCert={MintCertificate}
-        //         createCanvas={handleCreateCanvas}
-        //         open={open}
-        //         onClose={() => setOpen(false)}
-        //       />
-        //     </Collapse>
-        //   </Box>
-        // </StyledCard>
-      ))}
+      )) : (
+        <div className="w-full">
+          <div className="w-1/2 bg-[#24303F] my-2 py-3 rounded-lg px-5 justify-between">
+            <p className="my-auto text-2xl font-semibold">
+              No Certificates Found
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
