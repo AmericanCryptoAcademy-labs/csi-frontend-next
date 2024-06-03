@@ -4,7 +4,6 @@ import { Box, Button, Icon, Typography } from "@mui/material";
 import { appAtom } from "@/store/AppStore";
 import { useAtom } from "jotai";
 import { Address } from "viem";
-import { StyledCard } from "@/components/Cards/Cards";
 import { TExistingOrgProps, TOrg } from "@/types";
 
 export default function ExistingOrgsSection(props: TExistingOrgProps) {

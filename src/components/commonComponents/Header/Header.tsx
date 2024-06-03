@@ -11,7 +11,7 @@ import { PrimaryButton, AccountButton } from "@/components";
 import { shortenAddress } from "@/helpers";
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { Contracts, CSI_DELEGATE_ROLE, ORG_ADMIN_ROLE } from '@/contracts';
-import allowedAddresses from "../../helpers/allowedAddresses.json";
+import allowedAddresses from "../../../helpers/allowedAddresses.json";
 import { TOrg } from "@/types";
 
 

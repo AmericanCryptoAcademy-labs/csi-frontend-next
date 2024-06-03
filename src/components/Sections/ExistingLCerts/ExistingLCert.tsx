@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import { useAtom } from "jotai";
 import { appAtom } from "@/store/AppStore";
-import { StyledCard } from "@/components/Cards/Cards";
 import { readContract } from "wagmi/actions";
 import { useConfig, useWriteContract } from "wagmi";
 import { TExistingLCertProps, TOrg, TLCert, TIssueLCertParams } from "@/types";
@@ -183,8 +182,10 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
     // Upload the image to IPFS and get the image URL
     const imageFile = new File([imageData], "image.jpeg", { type: "image/jpeg" });
     const imageCID = await nftstorage.storeBlob(imageFile);
-    const imageUrl = `https://ipfs.io/ipfs/${imageCID}`;
+    const imageUrl = `https://nftstorage.link/ipfs/${imageCID}`;
     const nextTokenId = await fetchNextTokenId(lCerts[expandedIndex as number].certAddress);
+    console.log(imageCID, " ", imageUrl, " ", nextTokenId," ",  "Image CID and URL");
+    
 
     const metadata = {
       name: `${values.certName} #${nextTokenId}`, 
@@ -231,10 +232,12 @@ export default function ExistingOrgsSection(props: TExistingLCertProps) {
     const metadataFile = new File([JSON.stringify(metadata)], "metadata.json", {
       type: "application/json"
     });
-
+    
+    
     const metadataCID = await nftstorage.storeBlob(metadataFile);
-    const metadataUrl = `https://ipfs.io/ipfs/${metadataCID}/`
+    const metadataUrl = `https://nftstorage.link/ipfs/${metadataCID}/`
     setUrl(metadataUrl);
+    console.log(metadataUrl, "Metadata File");
 
     return metadataUrl;
   };

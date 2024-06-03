@@ -16,8 +16,7 @@ import { Contracts } from "@/contracts";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useWriteContract, useAccount } from "wagmi";
-import { StyledCard } from "@/components/Cards/Cards";
-import { PrimaryButton } from "@/components/Buttons/Buttons";
+import { PrimaryButton } from "@/components/commonComponents/Buttons/Buttons";
 
 enum ECreateLcert {
   CHOOSE_ORG = "CHOOSE_ORG",
