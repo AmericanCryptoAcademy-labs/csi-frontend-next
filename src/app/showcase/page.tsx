@@ -4,11 +4,13 @@ import { useAccount } from "wagmi";
 import { ipfsMetadata } from "@/types/commonTypes";
 import { supabase } from "@/config/supabase.config";
 import { fetchIPFSDataWithAxios } from "@/helpers/fetchIpfsMetadata";
+import Showcase from "@/components/showcase.page.components/showcase";
+import SpecificCertificate from "@/components/showcase.page.components/SpecificCertificate";
 
 const Page: React.FC = () => {
   const { address } = useAccount();
   const [certificates, setCertificates] = useState<string[]>([]);
-  const [ipnftTokens, setIpnftTokens] = useState<ipfsMetadata[]>([]);
+  const [showSpecificCertificate, setShowSpecificCertificate] = useState<ipfsMetadata|undefined>();
 
   const fetchCertificatesFromSupabase = async () => {
     if (!address) return;
@@ -21,36 +23,16 @@ const Page: React.FC = () => {
       console.error("Error fetching certificates:", error);
       return;
     }
+    // console.log(data);
 
     setCertificates(data[0]?.ipfs_token || []);
   };
 
-  useEffect(() => {
-    fetchCertificatesFromSupabase();
-  }, [address]);
-
-  useEffect(() => {
-    if (certificates.length > 0) {
-      fetchIPFSDataWithAxios(certificates).then(setIpnftTokens);
-    }
-  }, [certificates]);
-
   return (
-    <div className="bg-[#1b222d] h-full p-10 pt-5">
-      <p className="font-semibold text-2xl mb-5 text-white">My Certificates</p>
-      <div className="grid grid-cols-3 gap-4">
-        {ipnftTokens.map((cert, index) => (
-          <div key={index} className="">
-            <img
-              key={index} 
-              src={`https://nftstorage.link/ipfs/${cert.image}/image.jpeg`}
-              alt={`Certificate ${index}`}
-              className="w-full h-auto rounded-2xl" // This ensures the image takes the full width of the column and height adjusts automatically
-            />
-          </div>
-        ))}
-      </div>
-    </div>
+    showSpecificCertificate === undefined ? 
+    <Showcase fetchCertificatesFromSupabase={fetchCertificatesFromSupabase} certificates={certificates} setShowSpecificCertificate={setShowSpecificCertificate} /> :
+    <SpecificCertificate certificateToken={showSpecificCertificate}/>
+    
   );
 };
 

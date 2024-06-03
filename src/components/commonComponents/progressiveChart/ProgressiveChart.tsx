@@ -14,7 +14,8 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ startDate, endDate 
     const today = new Date();
 
     const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24));
-    const completedDays = Math.ceil((today.getTime() - start.getTime()) / (1000 * 3600 * 24));
+    const elapsedDays = Math.ceil((today.getTime() - start.getTime()) / (1000 * 3600 * 24));
+    const completedDays = Math.min(elapsedDays, totalDays);  // Ensure completedDays does not exceed totalDays
     const progress = (completedDays / totalDays) * 100;
 
     const radius = (size - strokeWidth) / 2;
@@ -22,7 +23,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ startDate, endDate 
     const offset = circumference - (progress / 100) * circumference;
 
     return (
-        <div className="relative flex justify-center items-center" >
+        <div className="relative flex justify-center items-center">
             <svg
                 width={size}
                 height={size}
@@ -52,14 +53,8 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ startDate, endDate 
                 />
             </svg>
             <div className="absolute flex flex-col items-center justify-center h-full w-full">
-                {/* <span className="text-xl font-semibold text-teal-100">
-                    {`${progress.toFixed(1)}%`}
-                </span> */}
                 <span className="text-sm font-medium text-teal-100">
-                    {`${completedDays}/${totalDays}`}
-                </span>
-                <span className="text-sm font-medium text-teal-100">
-                    Days
+                    {`${completedDays}/${totalDays} Days`}
                 </span>
             </div>
         </div>
