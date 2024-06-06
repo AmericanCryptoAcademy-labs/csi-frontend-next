@@ -19,9 +19,9 @@ function SpecificCertificate({ certificateToken }: Props) {
     .find((attr) => attr.trait_type === "Valid for")
     ?.value.substring(0, 10);
   return (
-    <div className="bg-[#1b222d] h-full p-10 pt-5">
+    <div className="bg-[#1b222d] h-full p-10 pt-5 text-white">
       <p className="font-semibold text-2xl mb-5 text-white">Certificates</p>
-      <div className="flex gap-8 w-full">
+      <div className="flex gap-8 w-full text-white">
         <div className="w-5/12">
           <img
             src={certificateToken?.image}
@@ -30,7 +30,7 @@ function SpecificCertificate({ certificateToken }: Props) {
           />
         </div>
 
-        <div className="w-7/12">
+        <div className="w-7/12 text-white">
           <p className="text-4xl font-semibold">{certificateToken?.name}</p>
           <div className="flex mt-12 text-xl">
             <Icon className="text-3xl" icon="mdi:user" />
